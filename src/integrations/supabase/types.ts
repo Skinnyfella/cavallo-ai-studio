@@ -14,7 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          tokens: number
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          tokens?: number
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          tokens?: number
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      saved_songs: {
+        Row: {
+          artist: string | null
+          created_at: string
+          genre: string
+          id: string
+          idea: string | null
+          language: string | null
+          lyrics: string
+          melody_guide: Json
+          mood: string | null
+          plan_used: Database["public"]["Enums"]["subscription_plan"]
+          production_tips: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          artist?: string | null
+          created_at?: string
+          genre: string
+          id?: string
+          idea?: string | null
+          language?: string | null
+          lyrics: string
+          melody_guide: Json
+          mood?: string | null
+          plan_used: Database["public"]["Enums"]["subscription_plan"]
+          production_tips?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          artist?: string | null
+          created_at?: string
+          genre?: string
+          id?: string
+          idea?: string | null
+          language?: string | null
+          lyrics?: string
+          melody_guide?: Json
+          mood?: string | null
+          plan_used?: Database["public"]["Enums"]["subscription_plan"]
+          production_tips?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +100,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      subscription_plan: "basic" | "pro" | "pro_plus"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +227,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_plan: ["basic", "pro", "pro_plus"],
+    },
   },
 } as const
