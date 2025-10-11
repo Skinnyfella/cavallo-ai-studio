@@ -11,9 +11,9 @@ const Welcome = () => {
       
       <div className="relative z-10 text-center px-6 animate-fade-in-up">
         {/* Logo */}
-        <div className="flex items-center justify-center gap-4 mb-8">
+        <div className="flex items-center justify-center gap-3 mb-8">
           <Music2 className="w-12 h-12 text-secondary animate-pulse-glow" />
-          
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground">Cavalllo Studios</h1>
         </div>
         
         {/* Tagline */}
