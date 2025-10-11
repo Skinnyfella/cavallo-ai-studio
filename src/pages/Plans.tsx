@@ -108,7 +108,7 @@ const Plans = () => {
                 style={{ animationDelay: `${index * 150}ms` }}
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold z-10 whitespace-nowrap">
                     Most Popular
                   </div>
                 )}
