@@ -71,6 +71,9 @@ export default {
         'gradient-hero': 'var(--gradient-hero)',
         'gradient-card': 'var(--gradient-card)',
         'gradient-glow': 'var(--gradient-glow)',
+        'gradient-basic': 'var(--gradient-basic)',
+        'gradient-pro': 'var(--gradient-pro)',
+        'gradient-pro-plus': 'var(--gradient-pro-plus)',
       },
       keyframes: {
         "accordion-down": {
@@ -93,6 +96,14 @@ export default {
           "0%": { opacity: "0", transform: "translateX(-20px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
+        "shimmer": {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
+        "aurora": {
+          "0%, 100%": { opacity: "0.3", transform: "translateY(0)" },
+          "50%": { opacity: "0.6", transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -100,6 +111,8 @@ export default {
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
         "fade-in-up": "fade-in-up 0.6s ease-out",
         "slide-in": "slide-in 0.5s ease-out",
+        "shimmer": "shimmer 8s linear infinite",
+        "aurora": "aurora 6s ease-in-out infinite",
       },
       backdropBlur: {
         'xs': '2px',

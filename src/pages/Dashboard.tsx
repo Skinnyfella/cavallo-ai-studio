@@ -5,15 +5,22 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { Music2, Sparkles, Copy, Download, LogOut } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Music2, Sparkles, Copy, Download, User, Crown, FileText, Mic, Play, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { CustomSongRequestModal } from "@/components/CustomSongRequestModal";
+
+type Plan = "basic" | "pro" | "pro_plus";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [userPlan] = useState<Plan>("pro_plus"); // Change this to test different plans
   const [tokens, setTokens] = useState(20);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [showCustomModal, setShowCustomModal] = useState(false);
   
   const [formData, setFormData] = useState({
     title: "",
@@ -45,34 +52,87 @@ const Dashboard = () => {
     toast.success("Copied to clipboard!");
   };
 
+  const getPlanTheme = (plan: Plan) => {
+    const themes = {
+      basic: {
+        bg: "bg-gradient-basic",
+        accent: "text-primary",
+        glow: "shadow-primary/20",
+        badge: "bg-primary/20 text-primary border-primary/30",
+        label: "Basic",
+      },
+      pro: {
+        bg: "bg-gradient-pro",
+        accent: "text-silver",
+        glow: "shadow-silver/20",
+        badge: "bg-silver/20 text-silver border-silver/30",
+        label: "Pro",
+      },
+      pro_plus: {
+        bg: "bg-gradient-pro-plus",
+        accent: "text-gold",
+        glow: "shadow-gold/30",
+        badge: "bg-gold/20 text-gold border-gold/30",
+        label: "Pro+",
+      },
+    };
+    return themes[plan];
+  };
+
+  const theme = getPlanTheme(userPlan);
+
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className={`min-h-screen ${theme.bg} relative overflow-hidden`}>
+      {/* Aurora effect for Pro+ */}
+      {userPlan === "pro_plus" && (
+        <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-gold/10 via-primary/10 to-transparent animate-aurora pointer-events-none" />
+      )}
+
+      {/* Particle trails for Pro */}
+      {userPlan === "pro" && (
+        <div className="absolute inset-0 pointer-events-none opacity-30">
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-silver rounded-full animate-pulse-glow" />
+          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-primary rounded-full animate-pulse-glow" style={{ animationDelay: "1s" }} />
+          <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-secondary rounded-full animate-pulse-glow" style={{ animationDelay: "2s" }} />
+        </div>
+      )}
+
       {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-xl bg-card/30">
+      <header className="border-b border-border/50 backdrop-blur-xl bg-card/30 relative z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Music2 className="w-8 h-8 text-secondary" />
             <h1 className="text-xl font-bold">Cavalllo Studios</h1>
+            <Badge className={`${theme.badge} ml-2`}>
+              {userPlan === "pro_plus" && <Crown className="w-3 h-3 mr-1" />}
+              {theme.label}
+            </Badge>
           </div>
           
           <div className="flex items-center gap-6">
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Tokens Remaining</p>
-              <p className="text-2xl font-bold text-primary">{tokens}</p>
+              <p className={`text-2xl font-bold ${theme.accent}`}>{tokens}</p>
             </div>
-            <Button
-              onClick={() => navigate("/")}
-              variant="outline"
-              size="icon"
-              className="rounded-xl"
-            >
-              <LogOut className="w-5 h-5" />
-            </Button>
+            <div className="relative">
+              <div className={`absolute inset-0 rounded-full ${
+                userPlan === "pro_plus" ? "bg-gradient-to-r from-gold to-primary p-0.5 animate-pulse-glow" :
+                userPlan === "pro" ? "bg-gradient-to-r from-silver to-primary p-0.5" :
+                "bg-primary/50 p-0.5"
+              }`}>
+                <div className="bg-background rounded-full">
+                  <Avatar className="w-10 h-10 cursor-pointer" onClick={() => navigate("/profile")}>
+                    <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" />
+                    <AvatarFallback>U</AvatarFallback>
+                  </Avatar>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
         {!showResults ? (
           // Input Form
           <div className="max-w-2xl mx-auto animate-fade-in-up">
@@ -83,7 +143,16 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-8">
+            {/* Upgrade banner for Basic users */}
+            {userPlan === "basic" && (
+              <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-sm">
+                <p className="text-sm text-center text-muted-foreground">
+                  ✨ Upgrade to <span className="text-silver font-semibold">Pro</span> to unlock melody matching and voice features
+                </p>
+              </div>
+            )}
+
+            <Card className={`backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-8 ${theme.glow} shadow-xl`}>
               <div className="space-y-6">
                 <div>
                   <Label className="text-foreground/90">Song Title</Label>
@@ -168,7 +237,7 @@ const Dashboard = () => {
                 <Button
                   onClick={handleGenerate}
                   disabled={isGenerating || !formData.title || !formData.genre}
-                  className="w-full h-14 rounded-xl bg-primary hover:bg-primary/90 text-lg font-semibold shadow-lg shadow-primary/30 group"
+                  className={`w-full h-14 rounded-xl bg-primary hover:bg-primary/90 text-lg font-semibold shadow-lg ${theme.glow} group`}
                 >
                   {isGenerating ? (
                     <span className="flex items-center gap-2">
@@ -184,6 +253,27 @@ const Dashboard = () => {
                 </Button>
               </div>
             </Card>
+
+            {/* Pro+ Custom Song Request Card */}
+            {userPlan === "pro_plus" && (
+              <Card className="mt-6 backdrop-blur-xl bg-gradient-to-r from-gold/10 to-primary/10 border-gold/30 rounded-3xl p-6 shadow-xl shadow-gold/20 cursor-pointer hover:shadow-gold/30 transition-all group"
+                   onClick={() => setShowCustomModal(true)}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gold/20 flex items-center justify-center">
+                      <FileText className="w-6 h-6 text-gold" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gold">📝 Request a Custom Song</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Work directly with our creative team
+                      </p>
+                    </div>
+                  </div>
+                  <Crown className="w-8 h-8 text-gold group-hover:scale-110 transition-transform" />
+                </div>
+              </Card>
+            )}
           </div>
         ) : (
           // Results View
@@ -204,7 +294,7 @@ const Dashboard = () => {
 
             <div className="grid md:grid-cols-3 gap-6">
               {/* Lyrics Card */}
-              <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6">
+              <Card className={`backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6 ${theme.glow} shadow-xl`}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold">Your Lyrics</h3>
                   <Button
@@ -241,9 +331,12 @@ const Dashboard = () => {
               </Card>
 
               {/* Melody Guide Card */}
-              <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6">
+              <Card className={`backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6 ${theme.glow} shadow-xl`}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold">Melody Guide</h3>
+                  {userPlan !== "basic" && (
+                    <Badge className={theme.badge}>Enhanced</Badge>
+                  )}
                 </div>
                 
                 <div className="space-y-4">
@@ -266,53 +359,98 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground mb-2">Hook Solfa</p>
                     <p className="font-mono text-primary">m s l | s f m | r d | —</p>
                   </div>
+
+                  {/* Pro features */}
+                  {(userPlan === "pro" || userPlan === "pro_plus") && (
+                    <>
+                      <Button variant="outline" className="w-full rounded-xl gap-2">
+                        🎵 Change Key
+                      </Button>
+                      <Button variant="outline" className="w-full rounded-xl gap-2">
+                        🎤 Auto-match my voice
+                      </Button>
+                    </>
+                  )}
                 </div>
               </Card>
 
-              {/* Production Tips Card */}
-              <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6">
+              {/* Production Tips / AI Studio Sample Card */}
+              <Card className={`backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6 ${theme.glow} shadow-xl`}>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold">Production Tips</h3>
-                  <Download className="w-5 h-5 text-muted-foreground" />
+                  <h3 className="text-xl font-bold">
+                    {userPlan === "pro_plus" ? "🎧 AI Studio Sample" : "Production Tips"}
+                  </h3>
+                  {userPlan === "pro_plus" ? (
+                    <Crown className={`w-5 h-5 ${theme.accent}`} />
+                  ) : (
+                    <Download className="w-5 h-5 text-muted-foreground" />
+                  )}
                 </div>
                 
-                <div className="space-y-3">
-                  <div className="bg-gradient-card rounded-xl p-4">
-                    <p className="text-sm text-muted-foreground">
-                      Try 95 BPM with warm harmonies for a smooth Afrobeat feel.
-                    </p>
+                {userPlan === "pro_plus" ? (
+                  <div className="space-y-4">
+                    <div className="bg-gradient-card rounded-xl p-6 text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gold/20 flex items-center justify-center">
+                        <Play className="w-8 h-8 text-gold" />
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Professional AI-generated sample ready
+                      </p>
+                      <Button className="w-full rounded-xl bg-gold hover:bg-gold/90 text-background font-semibold">
+                        <Play className="w-4 h-4 mr-2" />
+                        Play Sample
+                      </Button>
+                    </div>
+                    <Button variant="outline" className="w-full rounded-xl gap-2">
+                      <Download className="w-4 h-4" />
+                      Download Sample
+                    </Button>
                   </div>
-                  
-                  <div className="bg-gradient-card rounded-xl p-4">
-                    <p className="text-sm text-muted-foreground">
-                      Add reverb on chorus for richness and depth in the vocal delivery.
-                    </p>
+                ) : (
+                  <div className="space-y-3">
+                    <div className="bg-gradient-card rounded-xl p-4">
+                      <p className="text-sm text-muted-foreground">
+                        Try 95 BPM with warm harmonies for a smooth Afrobeat feel.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gradient-card rounded-xl p-4">
+                      <p className="text-sm text-muted-foreground">
+                        Add reverb on chorus for richness and depth in the vocal delivery.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gradient-card rounded-xl p-4">
+                      <p className="text-sm text-muted-foreground">
+                        Use soft percussion to match the energetic mood while keeping it clean.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-gradient-card rounded-xl p-4">
+                      <p className="text-sm text-muted-foreground">
+                        Layer backing vocals in the chorus for a fuller, stadium-ready sound.
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div className="bg-gradient-card rounded-xl p-4">
-                    <p className="text-sm text-muted-foreground">
-                      Use soft percussion to match the energetic mood while keeping it clean.
-                    </p>
-                  </div>
-                  
-                  <div className="bg-gradient-card rounded-xl p-4">
-                    <p className="text-sm text-muted-foreground">
-                      Layer backing vocals in the chorus for a fuller, stadium-ready sound.
-                    </p>
-                  </div>
-                </div>
+                )}
               </Card>
             </div>
           </div>
         )}
       </div>
 
+      {/* Custom Song Request Modal */}
+      <CustomSongRequestModal 
+        open={showCustomModal} 
+        onOpenChange={setShowCustomModal}
+      />
+
       {/* Footer */}
-      <footer className="border-t border-border/50 mt-20">
+      <footer className="border-t border-border/50 mt-20 relative z-10">
         <div className="max-w-7xl mx-auto px-6 py-8 text-center">
           <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mb-6" />
           <p className="text-sm text-muted-foreground">
-            © 2025 Cavalllo Studios — The Vision That Builds The Future.
+            © 2025 Cavalllo Studios — Create. Refine. Elevate.
           </p>
         </div>
       </footer>
