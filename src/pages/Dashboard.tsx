@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Music2, Sparkles, Copy, Download, User, Crown, FileText, Mic, Play, Settings } from "lucide-react";
+import { Music2, Sparkles, Copy, Download, User, Crown, FileText, Mic, Play, Settings, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { CustomSongRequestModal } from "@/components/CustomSongRequestModal";
@@ -110,10 +110,6 @@ const Dashboard = () => {
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Tokens Remaining</p>
-              <p className={`text-2xl font-bold ${theme.accent}`}>{tokens}</p>
-            </div>
             <div className="relative">
               <div className={`absolute inset-0 rounded-full ${
                 userPlan === "pro_plus" ? "bg-gradient-to-r from-gold to-primary p-0.5 animate-pulse-glow" :
@@ -127,6 +123,10 @@ const Dashboard = () => {
                   </Avatar>
                 </div>
               </div>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-muted-foreground">Tokens Remaining</p>
+              <p className={`text-2xl font-bold ${theme.accent}`}>{tokens}</p>
             </div>
           </div>
         </div>
@@ -279,14 +279,21 @@ const Dashboard = () => {
           // Results View
           <div className="animate-fade-in-up">
             <div className="flex items-center justify-between mb-8">
-              <div>
+              <Button
+                onClick={() => setShowResults(false)}
+                variant="outline"
+                className="rounded-xl gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+              <div className="text-center flex-1">
                 <h2 className="text-3xl font-bold mb-2">Your Song is Ready!</h2>
                 <p className="text-muted-foreground">"{formData.title}"</p>
               </div>
               <Button
                 onClick={() => setShowResults(false)}
-                variant="outline"
-                className="rounded-xl"
+                className={`rounded-xl ${theme.accent}`}
               >
                 Create Another
               </Button>
