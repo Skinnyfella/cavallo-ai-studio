@@ -95,6 +95,13 @@ const Plans = () => {
           </p>
         </div>
 
+        {/* Most Popular Badge */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
+            Most Popular
+          </div>
+        </div>
+
         {/* Plans Grid */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {plans.map((plan, index) => {
@@ -107,15 +114,10 @@ const Plans = () => {
                 className="group relative animate-fade-in-up"
                 style={{ animationDelay: `${index * 150}ms` }}
               >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold z-10 whitespace-nowrap">
-                    Most Popular
-                  </div>
-                )}
                 
                 <div className={`
                   backdrop-blur-xl bg-card-glass/40 border rounded-3xl p-8 h-full
-                  transition-all duration-300 hover:scale-105
+                  transition-all duration-300 hover:scale-105 flex flex-col
                   ${isSelected ? 'border-primary shadow-2xl' : 'border-border/50'}
                   ${plan.glowColor}
                 `}>
@@ -148,7 +150,7 @@ const Plans = () => {
                   </div>
 
                   {/* Features */}
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-3 mb-8 flex-grow">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
