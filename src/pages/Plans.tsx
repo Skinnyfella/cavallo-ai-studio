@@ -74,7 +74,15 @@ const Plans = () => {
     toast.success("Payment successful! Unlocking your studio...");
     
     setTimeout(() => {
-      navigate("/dashboard");
+      // Navigate to plan-specific dashboard
+      const dashboardRoutes = {
+        basic: "/dashboard/basic",
+        pro: "/dashboard/pro", 
+        proplus: "/dashboard/proplus"
+      };
+      
+      const targetRoute = selectedPlan ? dashboardRoutes[selectedPlan] : "/dashboard";
+      navigate(targetRoute);
     }, 2000);
   };
 
