@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Star } from 'lucide-react';
+import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Star, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -81,6 +81,14 @@ const BasicDashboard = () => {
                 <p className="text-2xl font-bold text-emerald-100">{generationsUsed}/{maxGenerations}</p>
               </div>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/profile')}
+              className="w-12 h-12 bg-emerald-800/50 hover:bg-emerald-700/50 text-emerald-200 hover:text-white border border-emerald-400/30 rounded-full"
+            >
+              <User className="w-5 h-5" />
+            </Button>
             <div className="w-12 h-12 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40">
               <Music className="w-6 h-6 text-white" />
             </div>

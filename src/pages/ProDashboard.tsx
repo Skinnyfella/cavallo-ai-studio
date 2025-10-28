@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, Star } from 'lucide-react';
+import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, Star, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -106,6 +106,14 @@ const ProDashboard = () => {
               <p className="text-sm text-blue-200 font-medium">Daily Generations</p>
               <p className="text-2xl font-bold text-blue-100">{generationsUsed}/{maxGenerations}</p>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/profile')}
+              className="w-12 h-12 bg-blue-800/50 hover:bg-blue-700/50 text-blue-200 hover:text-white border border-blue-400/30 rounded-full"
+            >
+              <User className="w-5 h-5" />
+            </Button>
             <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/40">
               <Mic className="w-6 h-6 text-white" />
             </div>

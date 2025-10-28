@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones } from 'lucide-react';
+import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ProPlusDashboard = () => {
@@ -89,6 +89,14 @@ const ProPlusDashboard = () => {
                 <p className="text-2xl font-bold text-purple-100">Unlimited</p>
               </div>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/profile')}
+              className="w-12 h-12 bg-purple-800/50 hover:bg-purple-700/50 text-purple-200 hover:text-white border border-purple-400/30 rounded-full"
+            >
+              <User className="w-5 h-5" />
+            </Button>
             <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-fuchsia-400 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/40">
               <Crown className="w-6 h-6 text-white" />
             </div>

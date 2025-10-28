@@ -1,9 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Slider } from "@/components/ui/slider";
 import { 
   Music2, 
   Coins, 
@@ -13,247 +18,664 @@ import {
   ArrowLeft,
   Settings,
   LogOut,
-  Zap
+  Zap,
+  User,
+  Heart,
+  Users,
+  Mic,
+  Upload,
+  Play,
+  Eye,
+  CreditCard,
+  Calendar,
+  Star,
+  Volume2,
+  Edit3,
+  Camera,
+  Mail,
+  Lock
 } from "lucide-react";
 import { toast } from "sonner";
 
-type Plan = "basic" | "pro" | "pro_plus";
+type Plan = "basic" | "pro" | "proplus";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [userPlan] = useState<Plan>("pro_plus");
-  const [tokens] = useState(20);
+  const [userPlan] = useState<Plan>("proplus");
+  const [tokens] = useState(32);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [genrePreferences, setGenrePreferences] = useState([70, 85, 60, 45, 90, 75]);
+  const [userProfile, setUserProfile] = useState({
+    name: "Sarah Williams",
+    username: "skinnybeats",
+    email: "sarah@example.com",
+    joinDate: "January 2024",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah"
+  });
 
-  const getPlanBadge = (plan: Plan) => {
+  const getPlanConfig = (plan: Plan) => {
     const configs = {
-      basic: { label: "Basic", color: "bg-primary/20 text-primary border-primary/30" },
-      pro: { label: "Pro", color: "bg-silver/20 text-silver border-silver/30" },
-      pro_plus: { label: "Pro+", color: "bg-gold/20 text-gold border-gold/30" },
+      basic: { 
+        label: "Basic", 
+        color: "bg-emerald-600 text-white",
+        gradient: "from-emerald-500 to-green-500",
+        theme: "emerald"
+      },
+      pro: { 
+        label: "Pro", 
+        color: "bg-blue-600 text-white",
+        gradient: "from-blue-500 to-cyan-500", 
+        theme: "blue"
+      },
+      proplus: { 
+        label: "Pro+", 
+        color: "bg-purple-600 text-white",
+        gradient: "from-purple-500 to-fuchsia-500",
+        theme: "purple"
+      },
     };
     return configs[plan];
   };
 
-  const planConfig = getPlanBadge(userPlan);
+  const planConfig = getPlanConfig(userPlan);
 
   const savedSongs = [
     {
       id: "1",
       title: "Summer Vibes",
       date: "2025-01-08",
-      plan: "pro_plus",
+      plan: "proplus",
       genre: "Afrobeat",
+      bpm: 120,
+      key: "F# Minor",
+      duration: "3:24",
+      isLiked: true
     },
     {
-      id: "2",
+      id: "2", 
       title: "Midnight Dreams",
       date: "2025-01-07",
       plan: "pro",
       genre: "R&B",
+      bpm: 85,
+      key: "C Major",
+      duration: "2:45",
+      isLiked: false
     },
+    {
+      id: "3",
+      title: "City Lights",
+      date: "2025-01-06", 
+      plan: "proplus",
+      genre: "Pop",
+      bpm: 128,
+      key: "G Major",
+      duration: "3:12",
+      isLiked: true
+    }
   ];
 
+  const collaborations = [
+    {
+      id: "1",
+      title: "Ocean Waves (Remix)",
+      collaborator: "MikeBeats",
+      status: "active",
+      lastActivity: "2 hours ago"
+    },
+    {
+      id: "2", 
+      title: "Thunder Storm",
+      collaborator: "ProducerX",
+      status: "completed",
+      lastActivity: "1 day ago"
+    }
+  ];
+
+  const genreLabels = ["Pop", "Hip Hop", "R&B", "Rock", "Afrobeats", "Electronic"];
+
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-xl bg-card/30">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-background text-foreground">
+      <main className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
           <Button
-            onClick={() => navigate("/dashboard")}
             variant="ghost"
-            className="gap-2"
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center gap-2 hover:bg-muted"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
           </Button>
-          
-          <div className="flex items-center gap-3">
-            <Music2 className="w-8 h-8 text-secondary" />
-            <h1 className="text-xl font-bold">Profile & Settings</h1>
-          </div>
-
-          <div className="w-24" />
         </div>
-      </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Profile Info Card */}
-          <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6 h-fit">
-            <div className="text-center space-y-4">
-              <div className="relative mx-auto w-24 h-24">
-                <div className={`absolute inset-0 rounded-full ${
-                  userPlan === "pro_plus" ? "bg-gradient-to-r from-gold to-primary animate-pulse-glow" :
-                  userPlan === "pro" ? "bg-gradient-to-r from-silver to-primary" :
-                  "bg-primary/50"
-                } p-1`}>
-                  <Avatar className="w-full h-full">
-                    <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" />
-                    <AvatarFallback>U</AvatarFallback>
+        <div className="space-y-8">
+          {/* User Summary Header */}
+          <Card className="bg-gradient-to-r from-background to-muted/20 border border-border/50">
+            <CardContent className="p-8">
+              <div className="flex items-start gap-6">
+                <div className="relative">
+                  <Avatar className="h-20 w-20 border-2 border-border">
+                    <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
+                    <AvatarFallback className="text-lg">
+                      {userProfile.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
                   </Avatar>
-                </div>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-bold">MusicMaker</h2>
-                <p className="text-sm text-muted-foreground">Joined Jan 2025</p>
-              </div>
-
-              <Badge className={`${planConfig.color} px-4 py-1.5 font-semibold`}>
-                {userPlan === "pro_plus" && <Crown className="w-4 h-4 mr-1" />}
-                {planConfig.label}
-              </Badge>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-border/50 space-y-3">
-              <Button
-                variant="outline"
-                className="w-full rounded-xl justify-start gap-2"
-                onClick={() => toast.info("Settings coming soon")}
-              >
-                <Settings className="w-4 h-4" />
-                Settings
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full rounded-xl justify-start gap-2 text-destructive hover:text-destructive"
-                onClick={() => navigate("/")}
-              >
-                <LogOut className="w-4 h-4" />
-                Logout
-              </Button>
-            </div>
-          </Card>
-
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Token Wallet */}
-            <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6">
-              <CardHeader className="p-0 pb-6">
-                <CardTitle className="flex items-center gap-2">
-                  <Coins className="w-6 h-6 text-gold" />
-                  Token Wallet
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-3xl font-bold text-gold">{tokens} Tokens</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      4 tokens per song generation
-                    </p>
-                  </div>
-                  <Button className="rounded-xl bg-gold hover:bg-gold/90 text-background font-semibold shadow-lg shadow-gold/30">
-                    <Zap className="w-4 h-4 mr-2" />
-                    Buy More
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="absolute -bottom-2 -right-2 h-8 w-8 p-0 border-2 border-background"
+                  >
+                    <Camera className="h-3 w-3" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Plan Management */}
-            <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6">
-              <CardHeader className="p-0 pb-6">
-                <CardTitle>Upgrade Your Plan</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 grid md:grid-cols-2 gap-4">
-                <Button
-                  variant="outline"
-                  className="h-auto p-6 rounded-xl border-silver/30 hover:bg-silver/10 hover:border-silver/50 transition-all group"
-                  disabled={userPlan === "pro" || userPlan === "pro_plus"}
-                >
-                  <div className="text-left w-full">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge className="bg-silver/20 text-silver border-silver/30">Pro</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Unlock melody matching & voice features
-                    </p>
+                
+                <div className="flex-1 space-y-2">
+                  <div>
+                    <h1 className="text-3xl font-bold">{userProfile.name}</h1>
+                    <p className="text-muted-foreground text-lg">@{userProfile.username}</p>
                   </div>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="h-auto p-6 rounded-xl border-gold/30 hover:bg-gold/10 hover:border-gold/50 transition-all group"
-                  disabled={userPlan === "pro_plus"}
-                >
-                  <div className="text-left w-full">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge className="bg-gold/20 text-gold border-gold/30">
-                        <Crown className="w-3 h-3 mr-1" />
-                        Pro+
-                      </Badge>
+                  
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <Badge className={planConfig.color}>
+                      <Star className="h-3 w-3 mr-1" />
+                      {planConfig.label} Plan
+                    </Badge>
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      Joined {userProfile.joinDate}
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      AI collaboration + premium features
-                    </p>
+                    <div className="flex items-center gap-1 text-sm">
+                      <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
+                      {tokens} tokens remaining
+                    </div>
                   </div>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Saved Songs */}
-            <Card className="backdrop-blur-xl bg-card-glass/40 border-border/50 rounded-3xl p-6">
-              <CardHeader className="p-0 pb-6">
-                <CardTitle className="flex items-center gap-2">
-                  <Music2 className="w-6 h-6 text-primary" />
-                  Saved Songs
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="space-y-4">
-                  {savedSongs.map((song) => (
-                    <div
-                      key={song.id}
-                      className="flex items-center justify-between p-4 rounded-xl bg-gradient-card border border-border/30 hover:border-primary/50 transition-all group"
+                  
+                  <div className="pt-2">
+                    <Button 
+                      className={`bg-gradient-to-r ${planConfig.gradient} hover:opacity-90 text-white shadow-lg`}
+                      onClick={() => navigate("/plans")}
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{song.title}</h3>
-                          <Badge variant="outline" className="text-xs">
-                            {song.genre}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Generated on {song.date}
-                        </p>
-                      </div>
+                      {userPlan === "proplus" ? "Manage Plan" : "Upgrade Plan"}
+                    </Button>
+                  </div>
+                </div>
 
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => toast.success("Download started")}
-                        >
-                          <Download className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="rounded-xl opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
-                          onClick={() => toast.success("Song deleted")}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                <div className="text-right space-y-3">
+                  <div>
+                    <p className="text-2xl font-bold">{savedSongs.length}</p>
+                    <p className="text-sm text-muted-foreground">Songs Created</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{savedSongs.filter(s => s.isLiked).length}</p>
+                    <p className="text-sm text-muted-foreground">Favorites</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{collaborations.filter(c => c.status === "active").length}</p>
+                    <p className="text-sm text-muted-foreground">Collaborations</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Main Content Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5 bg-muted/50">
+              <TabsTrigger value="overview" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Overview
+              </TabsTrigger>
+              <TabsTrigger value="songs" className="flex items-center gap-2">
+                <Volume2 className="h-4 w-4" />
+                My Music
+              </TabsTrigger>
+              <TabsTrigger value="ai-profile" className="flex items-center gap-2">
+                <Mic className="h-4 w-4" />
+                AI Profile
+              </TabsTrigger>
+              <TabsTrigger value="billing" className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4" />
+                Billing
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Settings
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Music Activity Tab */}
+            <TabsContent value="songs" className="space-y-6">
+              <Tabs defaultValue="my-songs" className="space-y-4">
+                <TabsList>
+                  <TabsTrigger value="my-songs">My Songs</TabsTrigger>
+                  <TabsTrigger value="favorites">Favorites</TabsTrigger>
+                  <TabsTrigger value="collaborations">Collaborations</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="my-songs">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Volume2 className="h-5 w-5" />
+                        My Songs ({savedSongs.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {savedSongs.map((song) => (
+                          <div key={song.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                                <Volume2 className="h-6 w-6 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">{song.title}</h3>
+                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                  <span>{song.genre}</span>
+                                  <span>•</span>
+                                  <span>{song.bpm} BPM</span>
+                                  <span>•</span>
+                                  <span>{song.key}</span>
+                                  <span>•</span>
+                                  <span>{song.duration}</span>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">Created on {song.date}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" size="sm">
+                                <Heart className={`h-4 w-4 ${song.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Play className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="favorites">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Heart className="h-5 w-5 text-red-500" />
+                        Favorite Songs ({savedSongs.filter(s => s.isLiked).length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {savedSongs.filter(s => s.isLiked).map((song) => (
+                          <div key={song.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="h-12 w-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
+                                <Heart className="h-6 w-6 text-white fill-white" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">{song.title}</h3>
+                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                  <span>{song.genre}</span>
+                                  <span>•</span>
+                                  <span>{song.bpm} BPM</span>
+                                  <span>•</span>
+                                  <span>{song.duration}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" size="sm">
+                                <Play className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="collaborations">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Users className="h-5 w-5" />
+                        Collaborations ({collaborations.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {collaborations.map((collab) => (
+                          <div key={collab.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                            <div className="flex items-center gap-4">
+                              <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                                <Users className="h-6 w-6 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">{collab.title}</h3>
+                                <p className="text-sm text-muted-foreground">with @{collab.collaborator}</p>
+                                <p className="text-xs text-muted-foreground">Last activity: {collab.lastActivity}</p>
+                              </div>
+                            </div>
+                            <Badge variant={collab.status === "active" ? "default" : "secondary"}>
+                              {collab.status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </TabsContent>
+
+            {/* AI Profile Tab */}
+            <TabsContent value="ai-profile" className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Mic className="h-5 w-5" />
+                      Voice Upload & Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="border-2 border-dashed rounded-lg p-6 text-center">
+                      <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Upload your voice sample for AI training
+                      </p>
+                      <Button>
+                        <Upload className="h-4 w-4 mr-2" />
+                        Upload Voice Sample
+                      </Button>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h4 className="font-semibold">Current Voice Models</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                          <div>
+                            <p className="font-medium">Primary Voice</p>
+                            <p className="text-sm text-muted-foreground">Uploaded Jan 2024</p>
+                          </div>
+                          <Button variant="outline" size="sm">
+                            <Edit3 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
+                  </CardContent>
+                </Card>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 mt-20">
-        <div className="max-w-7xl mx-auto px-6 py-8 text-center">
-          <div className="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mb-6" />
-          <p className="text-sm text-muted-foreground">
-            © 2025 Cavalllo Studios — Create. Refine. Elevate.
-          </p>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="h-5 w-5" />
+                      Genre Preferences
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {genreLabels.map((genre, index) => (
+                      <div key={genre} className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <label className="text-sm font-medium">{genre}</label>
+                          <span className="text-sm text-muted-foreground">{genrePreferences[index]}%</span>
+                        </div>
+                        <Slider
+                          value={[genrePreferences[index]]}
+                          onValueChange={(value) => {
+                            const newPreferences = [...genrePreferences];
+                            newPreferences[index] = value[0];
+                            setGenrePreferences(newPreferences);
+                          }}
+                          max={100}
+                          step={5}
+                          className="w-full"
+                        />
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Billing Tab */}
+            <TabsContent value="billing" className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CreditCard className="h-5 w-5" />
+                      Current Plan
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="p-4 bg-gradient-to-r from-muted/50 to-muted rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge className={planConfig.color}>
+                          {planConfig.label} Plan
+                        </Badge>
+                        <span className="text-sm text-muted-foreground">Active</span>
+                      </div>
+                      <p className="text-2xl font-bold">
+                        ${userPlan === "basic" ? "15" : userPlan === "pro" ? "25" : "40"}/month
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Next billing: February 8, 2025
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h4 className="font-semibold">Token Usage</h4>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-sm">
+                          <span>Used</span>
+                          <span>{50 - tokens}/50 tokens</span>
+                        </div>
+                        <Progress 
+                          value={((50 - tokens) / 50) * 100} 
+                          className="h-2"
+                        />
+                      </div>
+                    </div>
+
+                    <Button 
+                      className="w-full"
+                      onClick={() => navigate("/plans")}
+                    >
+                      {userPlan === "proplus" ? "Manage Billing" : "Upgrade Plan"}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Billing History</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {[
+                        { date: "Jan 8, 2025", amount: "$40.00", status: "Paid" },
+                        { date: "Dec 8, 2024", amount: "$40.00", status: "Paid" },
+                        { date: "Nov 8, 2024", amount: "$25.00", status: "Paid" }
+                      ].map((bill, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div>
+                            <p className="font-medium">{bill.date}</p>
+                            <p className="text-sm text-muted-foreground">{bill.amount}</p>
+                          </div>
+                          <Badge variant="secondary">{bill.status}</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Account Settings Tab */}
+            <TabsContent value="settings" className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Profile Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Display Name</label>
+                      <Input 
+                        value={userProfile.name}
+                        onChange={(e) => setUserProfile({...userProfile, name: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Username</label>
+                      <Input 
+                        value={userProfile.username}
+                        onChange={(e) => setUserProfile({...userProfile, username: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Email</label>
+                      <Input 
+                        type="email" 
+                        value={userProfile.email}
+                        onChange={(e) => setUserProfile({...userProfile, email: e.target.value})}
+                      />
+                    </div>
+                    
+                    <Button>Save Changes</Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Account Security</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Button variant="outline" className="w-full justify-start">
+                        <Lock className="h-4 w-4 mr-2" />
+                        Change Password
+                      </Button>
+                      
+                      <Button variant="outline" className="w-full justify-start">
+                        <Mail className="h-4 w-4 mr-2" />
+                        Update Email
+                      </Button>
+                      
+                      <Button variant="outline" className="w-full justify-start">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Two-Factor Authentication
+                      </Button>
+                    </div>
+                    
+                    <div className="pt-4 border-t">
+                      <Button variant="destructive" className="w-full">
+                        Delete Account
+                      </Button>
+                      <p className="text-xs text-muted-foreground text-center mt-2">
+                        This action cannot be undone
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid md:grid-cols-3 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Volume2 className="h-5 w-5" />
+                      Recent Activity
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {savedSongs.slice(0, 3).map((song) => (
+                        <div key={song.id} className="flex items-center gap-3 p-2 hover:bg-muted/50 rounded-lg transition-colors">
+                          <div className="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded flex items-center justify-center">
+                            <Volume2 className="h-4 w-4 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate">{song.title}</p>
+                            <p className="text-xs text-muted-foreground">{song.date}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Star className="h-5 w-5" />
+                      Quick Stats
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Songs this month</span>
+                      <span className="font-medium">8</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Tokens used</span>
+                      <span className="font-medium">{50 - tokens}/50</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Collaborations</span>
+                      <span className="font-medium">{collaborations.length}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <CreditCard className="h-5 w-5" />
+                      Plan Status
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Badge className={`${planConfig.color} text-center w-full justify-center`}>
+                      {planConfig.label} Member
+                    </Badge>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span>Tokens</span>
+                        <span>{tokens} remaining</span>
+                      </div>
+                      <Progress value={(tokens / 50) * 100} className="h-2" />
+                    </div>
+                    <Button 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => navigate("/plans")}
+                    >
+                      Manage Plan
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
-      </footer>
+      </main>
     </div>
   );
 };
