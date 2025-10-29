@@ -19,9 +19,34 @@ const ProDashboard = () => {
     genre: '',
     mood: '',
     duration: '',
+    artistInspiration: '',
+    language: '',
     ideas: '',
     voiceFile: null as File | null
   });
+  const [artistSuggestions, setArtistSuggestions] = useState<string[]>([]);
+  const [showArtistSuggestions, setShowArtistSuggestions] = useState(false);
+  
+  // Popular artists database for suggestions
+  const popularArtists = [
+    // International Pop/R&B
+    "Beyoncé", "Taylor Swift", "Adele", "Ed Sheeran", "Bruno Mars", "The Weeknd", 
+    "Ariana Grande", "Dua Lipa", "Justin Bieber", "Rihanna", "Drake", "Post Malone",
+    "Billie Eilish", "Olivia Rodrigo", "Harry Styles", "Doja Cat", "SZA", "Lizzo",
+    
+    // Afrobeats/African Artists
+    "Burna Boy", "Wizkid", "Davido", "Tiwa Savage", "Yemi Alade", "Ckay", "Omah Lay",
+    "Tems", "Fireboy DML", "Joeboy", "Rema", "Ayra Starr", "Asake", "Ruger",
+    
+    // Hip-Hop/Rap
+    "Kendrick Lamar", "J. Cole", "Travis Scott", "Future", "Lil Baby", "DaBaby",
+    "Megan Thee Stallion", "Cardi B", "Nicki Minaj", "Tyler, The Creator",
+    
+    // Nigerian/Pidgin Artists
+    "Phyno", "Olamide", "Flavour", "Tekno", "Mr. Eazi", "Kizz Daniel", "Simi",
+    "Adekunle Gold", "Falz", "Vector", "MI Abaga", "Ice Prince", "Brymo"
+  ];
+  
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [generationsUsed, setGenerationsUsed] = useState(7);
@@ -30,6 +55,24 @@ const ProDashboard = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Handle artist inspiration search
+    if (field === 'artistInspiration') {
+      if (value.length > 0) {
+        const filtered = popularArtists.filter(artist => 
+          artist.toLowerCase().includes(value.toLowerCase())
+        ).slice(0, 8);
+        setArtistSuggestions(filtered);
+        setShowArtistSuggestions(filtered.length > 0);
+      } else {
+        setShowArtistSuggestions(false);
+      }
+    }
+  };
+
+  const handleArtistSelect = (artist: string) => {
+    setFormData(prev => ({ ...prev, artistInspiration: artist }));
+    setShowArtistSuggestions(false);
   };
 
   const handleVoiceUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +93,7 @@ const ProDashboard = () => {
       return;
     }
 
-    if (!formData.title || !formData.genre || !formData.mood || !formData.duration) {
+    if (!formData.title || !formData.genre || !formData.mood || !formData.duration || !formData.artistInspiration || !formData.language) {
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -250,10 +293,61 @@ const ProDashboard = () => {
                           <SelectValue placeholder="Select duration" />
                         </SelectTrigger>
                         <SelectContent className="bg-black border-blue-500">
+                          <SelectItem value="30s">30 seconds</SelectItem>
+                          <SelectItem value="45s">45 seconds</SelectItem>
                           <SelectItem value="60s">1 minute</SelectItem>
-                          <SelectItem value="90s">1.5 minutes</SelectItem>
-                          <SelectItem value="2min">2 minutes</SelectItem>
-                          <SelectItem value="3min">3 minutes (Full song)</SelectItem>
+                          <SelectItem value="90s">1:30 minutes</SelectItem>
+                          <SelectItem value="120s">2 minutes</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Artist Inspiration */}
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-blue-200 mb-2">
+                        Artist Inspiration *
+                      </label>
+                      <Input
+                        placeholder="e.g., Beyoncé, Burna Boy, Ed Sheeran..."
+                        value={formData.artistInspiration}
+                        onChange={(e) => handleInputChange('artistInspiration', e.target.value)}
+                        onFocus={() => formData.artistInspiration && setShowArtistSuggestions(artistSuggestions.length > 0)}
+                        onBlur={() => setTimeout(() => setShowArtistSuggestions(false), 200)}
+                        className="bg-black/20 border-blue-400/50 text-white placeholder:text-blue-300 focus:border-blue-400"
+                      />
+                      
+                      {showArtistSuggestions && (
+                        <div className="absolute z-10 w-full mt-1 bg-gray-900 border border-blue-400/50 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                          {artistSuggestions.map((artist, index) => (
+                            <div
+                              key={index}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                handleArtistSelect(artist);
+                              }}
+                              className="px-4 py-2 hover:bg-blue-800/30 cursor-pointer text-white text-sm border-b border-blue-400/20 last:border-b-0"
+                            >
+                              {artist}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Language */}
+                    <div>
+                      <label className="block text-sm font-medium text-blue-200 mb-2">
+                        Language *
+                      </label>
+                      <Select onValueChange={(value) => handleInputChange('language', value)}>
+                        <SelectTrigger className="bg-black/20 border-blue-400/50 text-white">
+                          <SelectValue placeholder="Select language" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-black border-blue-500">
+                          <SelectItem value="english">English</SelectItem>
+                          <SelectItem value="pidgin">Pidgin</SelectItem>
+                          <SelectItem value="mix">Mix of Both</SelectItem>
+                          <SelectItem value="other" disabled>Other languages (coming soon)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

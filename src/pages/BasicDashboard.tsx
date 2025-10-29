@@ -281,9 +281,9 @@ This is our moment, wow`
                       <SelectValue placeholder="Select duration" />
                     </SelectTrigger>
                     <SelectContent className="bg-black border-emerald-500">
-                      <SelectItem value="30s">30 seconds (Demo)</SelectItem>
                       <SelectItem value="60s">1 minute</SelectItem>
                       <SelectItem value="90s">1.5 minutes</SelectItem>
+                      <SelectItem value="120s">2 minutes</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
