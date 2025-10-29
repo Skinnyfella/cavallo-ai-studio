@@ -223,15 +223,18 @@ const ProPlusDashboard = () => {
                             <SelectValue placeholder="Select genre" />
                           </SelectTrigger>
                           <SelectContent className="bg-black border-purple-500">
+                            <SelectItem value="afrobeats">Afrobeats</SelectItem>
                             <SelectItem value="pop">Pop</SelectItem>
-                            <SelectItem value="rock">Rock</SelectItem>
-                            <SelectItem value="hip-hop">Hip Hop</SelectItem>
-                            <SelectItem value="r&b">R&B</SelectItem>
-                            <SelectItem value="electronic">Electronic</SelectItem>
+                            <SelectItem value="hiphop">Hip Hop</SelectItem>
+                            <SelectItem value="rnb">R&B</SelectItem>
+                            <SelectItem value="gospel">Gospel</SelectItem>
+                            <SelectItem value="highlife">Highlife</SelectItem>
+                            <SelectItem value="amapiano">Amapiano</SelectItem>
+                            <SelectItem value="reggae">Reggae</SelectItem>
+                            <SelectItem value="dancehall">Dancehall</SelectItem>
+                            <SelectItem value="folk">Folk</SelectItem>
+                            <SelectItem value="country">Country</SelectItem>
                             <SelectItem value="jazz">Jazz</SelectItem>
-                            <SelectItem value="trap">Trap</SelectItem>
-                            <SelectItem value="house">House</SelectItem>
-                            <SelectItem value="ambient">Ambient</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -245,21 +248,21 @@ const ProPlusDashboard = () => {
                             <SelectValue placeholder="Select mood" />
                           </SelectTrigger>
                           <SelectContent className="bg-black border-purple-500">
-                            <SelectItem value="euphoric">Euphoric & Uplifting</SelectItem>
-                            <SelectItem value="dark">Dark & Mysterious</SelectItem>
-                            <SelectItem value="energetic">High Energy</SelectItem>
-                            <SelectItem value="chill">Chill & Atmospheric</SelectItem>
-                            <SelectItem value="emotional">Deep & Emotional</SelectItem>
-                            <SelectItem value="aggressive">Aggressive & Intense</SelectItem>
-                            <SelectItem value="dreamy">Dreamy & Ethereal</SelectItem>
-                            <SelectItem value="groovy">Groovy & Funky</SelectItem>
+                            <SelectItem value="happy">Happy & Upbeat</SelectItem>
+                            <SelectItem value="romantic">Romantic & Loving</SelectItem>
+                            <SelectItem value="sad">Sad & Emotional</SelectItem>
+                            <SelectItem value="energetic">Energetic & Party</SelectItem>
+                            <SelectItem value="chill">Chill & Relaxed</SelectItem>
+                            <SelectItem value="inspirational">Inspirational</SelectItem>
+                            <SelectItem value="nostalgic">Nostalgic</SelectItem>
+                            <SelectItem value="intense">Intense & Dramatic</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
-                    {/* Duration, Artist Inspiration & Language */}
-                    <div className="grid md:grid-cols-3 gap-4">
+                    {/* Duration & Language - Side by Side */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-purple-200 mb-2">
                           Duration *
@@ -278,37 +281,6 @@ const ProPlusDashboard = () => {
                         </Select>
                       </div>
                       
-                      <div className="relative">
-                        <label className="block text-sm font-medium text-purple-200 mb-2">
-                          Artist Inspiration *
-                        </label>
-                        <Input
-                          placeholder="e.g., Beyoncé, Burna Boy..."
-                          value={formData.artistInspiration}
-                          onChange={(e) => handleInputChange('artistInspiration', e.target.value)}
-                          onFocus={() => formData.artistInspiration && setShowArtistSuggestions(artistSuggestions.length > 0)}
-                          onBlur={() => setTimeout(() => setShowArtistSuggestions(false), 200)}
-                          className="bg-black/20 border-purple-400/50 text-white placeholder:text-purple-300 focus:border-purple-400"
-                        />
-                        
-                        {showArtistSuggestions && (
-                          <div className="absolute z-10 w-full mt-1 bg-gray-900 border border-purple-400/50 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                            {artistSuggestions.map((artist, index) => (
-                              <div
-                                key={index}
-                                onMouseDown={(e) => {
-                                  e.preventDefault();
-                                  handleArtistSelect(artist);
-                                }}
-                                className="px-4 py-2 hover:bg-purple-800/30 cursor-pointer text-white text-sm border-b border-purple-400/20 last:border-b-0"
-                              >
-                                {artist}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      
                       <div>
                         <label className="block text-sm font-medium text-purple-200 mb-2">
                           Language *
@@ -325,6 +297,38 @@ const ProPlusDashboard = () => {
                           </SelectContent>
                         </Select>
                       </div>
+                    </div>
+
+                    {/* Artist Inspiration - Full Width */}
+                    <div className="relative">
+                      <label className="block text-sm font-medium text-purple-200 mb-2">
+                        Artist Inspiration *
+                      </label>
+                      <Input
+                        placeholder="e.g., Beyoncé, Burna Boy, Ed Sheeran..."
+                        value={formData.artistInspiration}
+                        onChange={(e) => handleInputChange('artistInspiration', e.target.value)}
+                        onFocus={() => formData.artistInspiration && setShowArtistSuggestions(artistSuggestions.length > 0)}
+                        onBlur={() => setTimeout(() => setShowArtistSuggestions(false), 200)}
+                        className="bg-black/20 border-purple-400/50 text-white placeholder:text-purple-300 focus:border-purple-400"
+                      />
+                      
+                      {showArtistSuggestions && (
+                        <div className="absolute z-10 w-full mt-1 bg-gray-900 border border-purple-400/50 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                          {artistSuggestions.map((artist, index) => (
+                            <div
+                              key={index}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                handleArtistSelect(artist);
+                              }}
+                              className="px-4 py-2 hover:bg-purple-800/30 cursor-pointer text-white text-sm border-b border-purple-400/20 last:border-b-0"
+                            >
+                              {artist}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     {/* Advanced Songwriting Options */}

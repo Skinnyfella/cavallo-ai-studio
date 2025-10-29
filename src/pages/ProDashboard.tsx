@@ -249,14 +249,18 @@ const ProDashboard = () => {
                             <SelectValue placeholder="Select genre" />
                           </SelectTrigger>
                           <SelectContent className="bg-black border-blue-500">
+                            <SelectItem value="afrobeats">Afrobeats</SelectItem>
                             <SelectItem value="pop">Pop</SelectItem>
-                            <SelectItem value="rock">Rock</SelectItem>
-                            <SelectItem value="hip-hop">Hip Hop</SelectItem>
-                            <SelectItem value="r&b">R&B</SelectItem>
-                            <SelectItem value="country">Country</SelectItem>
-                            <SelectItem value="electronic">Electronic</SelectItem>
-                            <SelectItem value="jazz">Jazz</SelectItem>
+                            <SelectItem value="hiphop">Hip Hop</SelectItem>
+                            <SelectItem value="rnb">R&B</SelectItem>
+                            <SelectItem value="gospel">Gospel</SelectItem>
+                            <SelectItem value="highlife">Highlife</SelectItem>
+                            <SelectItem value="amapiano">Amapiano</SelectItem>
+                            <SelectItem value="reggae">Reggae</SelectItem>
+                            <SelectItem value="dancehall">Dancehall</SelectItem>
                             <SelectItem value="folk">Folk</SelectItem>
+                            <SelectItem value="country">Country</SelectItem>
+                            <SelectItem value="jazz">Jazz</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -271,38 +275,57 @@ const ProDashboard = () => {
                           </SelectTrigger>
                           <SelectContent className="bg-black border-blue-500">
                             <SelectItem value="happy">Happy & Upbeat</SelectItem>
+                            <SelectItem value="romantic">Romantic & Loving</SelectItem>
                             <SelectItem value="sad">Sad & Emotional</SelectItem>
-                            <SelectItem value="energetic">Energetic & Powerful</SelectItem>
+                            <SelectItem value="energetic">Energetic & Party</SelectItem>
                             <SelectItem value="chill">Chill & Relaxed</SelectItem>
-                            <SelectItem value="romantic">Romantic & Sweet</SelectItem>
-                            <SelectItem value="motivational">Motivational</SelectItem>
-                            <SelectItem value="dreamy">Dreamy & Atmospheric</SelectItem>
+                            <SelectItem value="inspirational">Inspirational</SelectItem>
+                            <SelectItem value="nostalgic">Nostalgic</SelectItem>
                             <SelectItem value="intense">Intense & Dramatic</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
-                    {/* Duration */}
-                    <div>
-                      <label className="block text-sm font-medium text-blue-200 mb-2">
-                        Duration *
-                      </label>
-                      <Select onValueChange={(value) => handleInputChange('duration', value)}>
-                        <SelectTrigger className="bg-black/20 border-blue-400/50 text-white w-full md:w-64">
-                          <SelectValue placeholder="Select duration" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-black border-blue-500">
-                          <SelectItem value="30s">30 seconds</SelectItem>
-                          <SelectItem value="45s">45 seconds</SelectItem>
-                          <SelectItem value="60s">1 minute</SelectItem>
-                          <SelectItem value="90s">1:30 minutes</SelectItem>
-                          <SelectItem value="120s">2 minutes</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    {/* Duration & Language - Side by Side */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-blue-200 mb-2">
+                          Duration *
+                        </label>
+                        <Select onValueChange={(value) => handleInputChange('duration', value)}>
+                          <SelectTrigger className="bg-black/20 border-blue-400/50 text-white">
+                            <SelectValue placeholder="Select duration" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-black border-blue-500">
+                            <SelectItem value="30s">30 seconds</SelectItem>
+                            <SelectItem value="45s">45 seconds</SelectItem>
+                            <SelectItem value="60s">1 minute</SelectItem>
+                            <SelectItem value="90s">1:30 minutes</SelectItem>
+                            <SelectItem value="120s">2 minutes</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-blue-200 mb-2">
+                          Language *
+                        </label>
+                        <Select onValueChange={(value) => handleInputChange('language', value)}>
+                          <SelectTrigger className="bg-black/20 border-blue-400/50 text-white">
+                            <SelectValue placeholder="Select language" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-black border-blue-500">
+                            <SelectItem value="english">English</SelectItem>
+                            <SelectItem value="pidgin">Pidgin</SelectItem>
+                            <SelectItem value="mix">Mix of Both</SelectItem>
+                            <SelectItem value="other" disabled>Other languages (coming soon)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
-                    {/* Artist Inspiration */}
+                    {/* Artist Inspiration - Full Width */}
                     <div className="relative">
                       <label className="block text-sm font-medium text-blue-200 mb-2">
                         Artist Inspiration *
@@ -332,24 +355,6 @@ const ProDashboard = () => {
                           ))}
                         </div>
                       )}
-                    </div>
-
-                    {/* Language */}
-                    <div>
-                      <label className="block text-sm font-medium text-blue-200 mb-2">
-                        Language *
-                      </label>
-                      <Select onValueChange={(value) => handleInputChange('language', value)}>
-                        <SelectTrigger className="bg-black/20 border-blue-400/50 text-white">
-                          <SelectValue placeholder="Select language" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-black border-blue-500">
-                          <SelectItem value="english">English</SelectItem>
-                          <SelectItem value="pidgin">Pidgin</SelectItem>
-                          <SelectItem value="mix">Mix of Both</SelectItem>
-                          <SelectItem value="other" disabled>Other languages (coming soon)</SelectItem>
-                        </SelectContent>
-                      </Select>
                     </div>
 
                     {/* Ideas */}

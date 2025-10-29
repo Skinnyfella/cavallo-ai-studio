@@ -271,71 +271,26 @@ This is our moment, wow`
                   </div>
                 </div>
 
-                {/* Duration */}
-                <div>
-                  <label className="block text-sm font-medium text-emerald-200 mb-2">
-                    Duration *
-                  </label>
-                  <Select onValueChange={(value) => handleInputChange('duration', value)}>
-                    <SelectTrigger className="bg-black/20 border-emerald-400/50 text-white w-full md:w-64">
-                      <SelectValue placeholder="Select duration" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-black border-emerald-500">
-                      <SelectItem value="60s">1 minute</SelectItem>
-                      <SelectItem value="90s">1.5 minutes</SelectItem>
-                      <SelectItem value="120s">2 minutes</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Artist Inspiration & Language */}
+                {/* Duration & Language */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div className="relative">
+                  <div>
                     <label className="block text-sm font-medium text-emerald-200 mb-2">
-                      Artist Inspiration *
+                      Duration *
                     </label>
-                    <Input
-                      type="text"
-                      value={formData.artistInspiration}
-                      onChange={(e) => handleInputChange('artistInspiration', e.target.value)}
-                      placeholder="Start typing... e.g., Bey, Burna, Billie"
-                      className="bg-black/20 border-emerald-400/50 text-white placeholder:text-emerald-300/50"
-                      onFocus={() => {
-                        if (formData.artistInspiration.length >= 2) {
-                          setShowArtistSuggestions(true);
-                        }
-                      }}
-                      onBlur={(e) => {
-                        // Check if the blur is happening because of clicking on a suggestion
-                        if (!e.currentTarget.contains(e.relatedTarget)) {
-                          // Delay hiding to allow clicking on suggestions
-                          setTimeout(() => setShowArtistSuggestions(false), 300);
-                        }
-                      }}
-                    />
-                    
-                    {/* Artist Suggestions Dropdown */}
-                    {showArtistSuggestions && artistSuggestions.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-emerald-900/95 border border-emerald-400/30 rounded-lg shadow-xl backdrop-blur-sm max-h-48 overflow-y-auto">
-                        {artistSuggestions.map((artist, index) => (
-                          <div
-                            key={index}
-                            className="px-4 py-2 hover:bg-emerald-800/50 cursor-pointer text-emerald-100 border-b border-emerald-400/10 last:border-b-0 transition-colors"
-                            onMouseDown={(e) => {
-                              e.preventDefault(); // Prevent blur from happening
-                              handleArtistSelect(artist);
-                            }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <Mic className="w-4 h-4 text-emerald-400" />
-                              <span>{artist}</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    <Select onValueChange={(value) => handleInputChange('duration', value)}>
+                      <SelectTrigger className="bg-black/20 border-emerald-400/50 text-white">
+                        <SelectValue placeholder="Select duration" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black border-emerald-500">
+                        <SelectItem value="30s">30 seconds</SelectItem>
+                        <SelectItem value="45s">45 seconds</SelectItem>
+                        <SelectItem value="60s">1 minute</SelectItem>
+                        <SelectItem value="90s">1:30 minutes</SelectItem>
+                        <SelectItem value="120s">2 minutes</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-emerald-200 mb-2">
                       Language *
@@ -354,6 +309,53 @@ This is our moment, wow`
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                {/* Artist Inspiration */}
+                <div className="relative">
+                  <label className="block text-sm font-medium text-emerald-200 mb-2">
+                    Artist Inspiration *
+                  </label>
+                  <Input
+                    type="text"
+                    value={formData.artistInspiration}
+                    onChange={(e) => handleInputChange('artistInspiration', e.target.value)}
+                    placeholder="Start typing... e.g., Bey, Burna, Billie"
+                    className="bg-black/20 border-emerald-400/50 text-white placeholder:text-emerald-300/50"
+                    onFocus={() => {
+                      if (formData.artistInspiration.length >= 2) {
+                        setShowArtistSuggestions(true);
+                      }
+                    }}
+                    onBlur={(e) => {
+                      // Check if the blur is happening because of clicking on a suggestion
+                      if (!e.currentTarget.contains(e.relatedTarget)) {
+                        // Delay hiding to allow clicking on suggestions
+                        setTimeout(() => setShowArtistSuggestions(false), 300);
+                      }
+                    }}
+                  />
+                  
+                  {/* Artist Suggestions Dropdown */}
+                  {showArtistSuggestions && artistSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-emerald-900/95 border border-emerald-400/30 rounded-lg shadow-xl backdrop-blur-sm max-h-48 overflow-y-auto">
+                      {artistSuggestions.map((artist, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 hover:bg-emerald-800/50 cursor-pointer text-emerald-100 border-b border-emerald-400/10 last:border-b-0 transition-colors"
+                          onMouseDown={(e) => {
+                            e.preventDefault(); // Prevent blur from happening
+                            handleArtistSelect(artist);
+                          }}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Mic className="w-4 h-4 text-emerald-400" />
+                            <span>{artist}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Ideas */}
