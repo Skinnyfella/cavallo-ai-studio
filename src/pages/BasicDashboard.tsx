@@ -21,7 +21,34 @@ const BasicDashboard = () => {
     language: '',
     ideas: ''
   });
+  const [artistSuggestions, setArtistSuggestions] = useState<string[]>([]);
+  const [showArtistSuggestions, setShowArtistSuggestions] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Popular artists database for suggestions
+  const popularArtists = [
+    // International Pop/R&B
+    "Beyoncé", "Taylor Swift", "Adele", "Ed Sheeran", "Bruno Mars", "The Weeknd", 
+    "Ariana Grande", "Dua Lipa", "Justin Bieber", "Rihanna", "Drake", "Post Malone",
+    "Billie Eilish", "Olivia Rodrigo", "Harry Styles", "Doja Cat", "SZA", "Lizzo",
+    
+    // Afrobeats/African Artists
+    "Burna Boy", "Wizkid", "Davido", "Tiwa Savage", "Yemi Alade", "Mr Eazi",
+    "Tekno", "Kizz Daniel", "Fireboy DML", "Joeboy", "Omah Lay", "Rema",
+    "Asake", "Ayra Starr", "Tems", "CKay", "Oxlade", "Bella Shmurda",
+    
+    // Hip-Hop/Rap
+    "Kendrick Lamar", "J. Cole", "Travis Scott", "Future", "Lil Baby", "DaBaby",
+    "Megan Thee Stallion", "Cardi B", "Nicki Minaj", "21 Savage", "Lil Wayne",
+    
+    // R&B/Soul
+    "Frank Ocean", "The Weeknd", "H.E.R.", "Summer Walker", "Jhené Aiko", "Daniel Caesar",
+    "Kali Uchis", "Solange", "Alicia Keys", "John Legend", "Anderson .Paak",
+    
+    // Alternative/Indie
+    "Lorde", "Lana Del Rey", "Arctic Monkeys", "Tame Impala", "Vampire Weekend",
+    "Bad Bunny", "Rosalía", "J Balvin", "Ozuna", "Karol G"
+  ];
   const [generationsUsed, setGenerationsUsed] = useState(2);
   const [generatedSong, setGeneratedSong] = useState<null | {
     lyrics: { verse: string; chorus: string };
@@ -36,6 +63,24 @@ const BasicDashboard = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Handle artist inspiration search
+    if (field === 'artistInspiration') {
+      if (value.length >= 2) {
+        const filtered = popularArtists.filter(artist => 
+          artist.toLowerCase().includes(value.toLowerCase())
+        ).slice(0, 6); // Limit to 6 suggestions
+        setArtistSuggestions(filtered);
+        setShowArtistSuggestions(true);
+      } else {
+        setShowArtistSuggestions(false);
+      }
+    }
+  };
+
+  const handleArtistSelect = (artist: string) => {
+    setFormData(prev => ({ ...prev, artistInspiration: artist }));
+    setShowArtistSuggestions(false);
   };
 
   const handleGenerate = async () => {
@@ -245,29 +290,50 @@ This is our moment, wow`
 
                 {/* Artist Inspiration & Language */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div>
+                  <div className="relative">
                     <label className="block text-sm font-medium text-emerald-200 mb-2">
                       Artist Inspiration *
                     </label>
-                    <Select onValueChange={(value) => handleInputChange('artistInspiration', value)}>
-                      <SelectTrigger className="bg-black/20 border-emerald-400/50 text-white">
-                        <SelectValue placeholder="Whose sound inspires you?" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-black border-emerald-500">
-                        <SelectItem value="taylor-swift">Taylor Swift</SelectItem>
-                        <SelectItem value="drake">Drake</SelectItem>
-                        <SelectItem value="adele">Adele</SelectItem>
-                        <SelectItem value="ed-sheeran">Ed Sheeran</SelectItem>
-                        <SelectItem value="billie-eilish">Billie Eilish</SelectItem>
-                        <SelectItem value="bruno-mars">Bruno Mars</SelectItem>
-                        <SelectItem value="ariana-grande">Ariana Grande</SelectItem>
-                        <SelectItem value="post-malone">Post Malone</SelectItem>
-                        <SelectItem value="burna-boy">Burna Boy</SelectItem>
-                        <SelectItem value="wizkid">WizKid</SelectItem>
-                        <SelectItem value="beyonce">Beyoncé</SelectItem>
-                        <SelectItem value="the-weeknd">The Weeknd</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      type="text"
+                      value={formData.artistInspiration}
+                      onChange={(e) => handleInputChange('artistInspiration', e.target.value)}
+                      placeholder="Start typing... e.g., Bey, Burna, Billie"
+                      className="bg-black/20 border-emerald-400/50 text-white placeholder:text-emerald-300/50"
+                      onFocus={() => {
+                        if (formData.artistInspiration.length >= 2) {
+                          setShowArtistSuggestions(true);
+                        }
+                      }}
+                      onBlur={(e) => {
+                        // Check if the blur is happening because of clicking on a suggestion
+                        if (!e.currentTarget.contains(e.relatedTarget)) {
+                          // Delay hiding to allow clicking on suggestions
+                          setTimeout(() => setShowArtistSuggestions(false), 300);
+                        }
+                      }}
+                    />
+                    
+                    {/* Artist Suggestions Dropdown */}
+                    {showArtistSuggestions && artistSuggestions.length > 0 && (
+                      <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-emerald-900/95 border border-emerald-400/30 rounded-lg shadow-xl backdrop-blur-sm max-h-48 overflow-y-auto">
+                        {artistSuggestions.map((artist, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-2 hover:bg-emerald-800/50 cursor-pointer text-emerald-100 border-b border-emerald-400/10 last:border-b-0 transition-colors"
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // Prevent blur from happening
+                              handleArtistSelect(artist);
+                            }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <Mic className="w-4 h-4 text-emerald-400" />
+                              <span>{artist}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   
                   <div>
@@ -280,15 +346,11 @@ This is our moment, wow`
                       </SelectTrigger>
                       <SelectContent className="bg-black border-emerald-500">
                         <SelectItem value="english">English</SelectItem>
-                        <SelectItem value="spanish">Spanish</SelectItem>
-                        <SelectItem value="french">French</SelectItem>
-                        <SelectItem value="yoruba">Yoruba</SelectItem>
-                        <SelectItem value="igbo">Igbo</SelectItem>
-                        <SelectItem value="hausa">Hausa</SelectItem>
-                        <SelectItem value="pidgin">Nigerian Pidgin</SelectItem>
-                        <SelectItem value="swahili">Swahili</SelectItem>
-                        <SelectItem value="portuguese">Portuguese</SelectItem>
-                        <SelectItem value="german">German</SelectItem>
+                        <SelectItem value="pidgin">Pidgin</SelectItem>
+                        <SelectItem value="mix">Mix of Both</SelectItem>
+                        <SelectItem value="coming-soon" disabled className="text-emerald-400/50 cursor-not-allowed">
+                          Other languages coming soon...
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
