@@ -59,19 +59,34 @@ const Profile = () => {
         label: "Basic", 
         color: "bg-emerald-600 text-white",
         gradient: "from-emerald-500 to-green-500",
-        theme: "emerald"
+        theme: "emerald",
+        bgGradient: "from-emerald-900 via-green-800 to-teal-900",
+        cardBg: "bg-emerald-800/10 border-emerald-400/20",
+        textPrimary: "text-emerald-100",
+        textSecondary: "text-emerald-200",
+        buttonHover: "hover:bg-emerald-800/50"
       },
       pro: { 
         label: "Pro", 
         color: "bg-blue-600 text-white",
         gradient: "from-blue-500 to-cyan-500", 
-        theme: "blue"
+        theme: "blue",
+        bgGradient: "from-blue-900 via-indigo-800 to-cyan-900",
+        cardBg: "bg-blue-800/10 border-blue-400/20",
+        textPrimary: "text-blue-100",
+        textSecondary: "text-blue-200",
+        buttonHover: "hover:bg-blue-800/50"
       },
       proplus: { 
         label: "Pro+", 
         color: "bg-purple-600 text-white",
         gradient: "from-purple-500 to-fuchsia-500",
-        theme: "purple"
+        theme: "purple",
+        bgGradient: "from-purple-900 via-violet-800 to-fuchsia-900",
+        cardBg: "bg-purple-800/10 border-purple-400/20",
+        textPrimary: "text-purple-100",
+        textSecondary: "text-purple-200",
+        buttonHover: "hover:bg-purple-800/50"
       },
     };
     return configs[plan];
@@ -79,41 +94,63 @@ const Profile = () => {
 
   const planConfig = getPlanConfig(userPlan);
 
+  const getDashboardRoute = (plan: Plan) => {
+    const routes = {
+      basic: "/dashboard/basic",
+      pro: "/dashboard/pro", 
+      proplus: "/dashboard/proplus"
+    };
+    return routes[plan];
+  };
+
+  // Plan-specific settings
+  const maxSongs = userPlan === "basic" ? 10 : userPlan === "pro" ? 50 : 999;
+  const maxTokens = userPlan === "basic" ? 20 : userPlan === "pro" ? 35 : 50;
+  
   const savedSongs = [
     {
       id: "1",
       title: "Summer Vibes",
       date: "2025-01-08",
-      plan: "proplus",
+      plan: userPlan,
       genre: "Afrobeat",
       bpm: 120,
       key: "F# Minor",
       duration: "3:24",
-      isLiked: true
+      isLiked: true,
+      hasLyrics: true,
+      hasMelody: userPlan !== "basic",
+      hasVocals: userPlan === "proplus"
     },
     {
       id: "2", 
       title: "Midnight Dreams",
       date: "2025-01-07",
-      plan: "pro",
+      plan: userPlan,
       genre: "R&B",
       bpm: 85,
       key: "C Major",
       duration: "2:45",
-      isLiked: false
+      isLiked: false,
+      hasLyrics: true,
+      hasMelody: userPlan !== "basic",
+      hasVocals: userPlan === "proplus"
     },
     {
       id: "3",
       title: "City Lights",
       date: "2025-01-06", 
-      plan: "proplus",
+      plan: userPlan,
       genre: "Pop",
       bpm: 128,
       key: "G Major",
       duration: "3:12",
-      isLiked: true
+      isLiked: true,
+      hasLyrics: true,
+      hasMelody: userPlan !== "basic",
+      hasVocals: userPlan === "proplus"
     }
-  ];
+  ].slice(0, Math.min(8, maxSongs)); // Show sample songs based on plan limits
 
   const collaborations = [
     {
@@ -135,14 +172,14 @@ const Profile = () => {
   const genreLabels = ["Pop", "Hip Hop", "R&B", "Rock", "Afrobeats", "Electronic"];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className={`min-h-screen bg-gradient-to-br ${planConfig.bgGradient} ${planConfig.textPrimary}`}>
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Button
             variant="ghost"
-            onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-2 hover:bg-muted"
+            onClick={() => navigate(getDashboardRoute(userPlan))}
+            className={`flex items-center gap-2 ${planConfig.textSecondary} ${planConfig.buttonHover} border-${planConfig.theme}-400/30`}
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Dashboard
@@ -151,7 +188,7 @@ const Profile = () => {
 
         <div className="space-y-8">
           {/* User Summary Header */}
-          <Card className="bg-gradient-to-r from-background to-muted/20 border border-border/50">
+          <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-3xl shadow-lg`}>
             <CardContent className="p-8">
               <div className="flex items-start gap-6">
                 <div className="relative">
@@ -196,7 +233,9 @@ const Profile = () => {
                       className={`bg-gradient-to-r ${planConfig.gradient} hover:opacity-90 text-white shadow-lg`}
                       onClick={() => navigate("/plans")}
                     >
-                      {userPlan === "proplus" ? "Manage Plan" : "Upgrade Plan"}
+                      {userPlan === "basic" ? "Unlock More Features" : 
+                       userPlan === "pro" ? "Upgrade to Pro+" : 
+                       "Creator Dashboard"}
                     </Button>
                   </div>
                 </div>
@@ -221,7 +260,7 @@ const Profile = () => {
 
           {/* Main Content Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5 bg-muted/50">
+            <TabsList className={`grid w-full grid-cols-5 ${planConfig.cardBg} backdrop-blur-xl`}>
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 Overview
@@ -254,19 +293,34 @@ const Profile = () => {
                 </TabsList>
 
                 <TabsContent value="my-songs">
-                  <Card>
+                  <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Volume2 className="h-5 w-5" />
-                        My Songs ({savedSongs.length})
+                        My Songs ({savedSongs.length}/{maxSongs === 999 ? '∞' : maxSongs})
                       </CardTitle>
+                      {userPlan === "basic" && (
+                        <p className="text-sm text-muted-foreground">
+                          Lyrics only • Text downloads • {10 - savedSongs.length} slots remaining
+                        </p>
+                      )}
+                      {userPlan === "pro" && (
+                        <p className="text-sm text-muted-foreground">
+                          Lyrics + Melody • MIDI downloads • Key changes available
+                        </p>
+                      )}
+                      {userPlan === "proplus" && (
+                        <p className="text-sm text-muted-foreground">
+                          Full songs + AI vocals • Professional quality • Unlimited storage
+                        </p>
+                      )}
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
                         {savedSongs.map((song) => (
                           <div key={song.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                             <div className="flex items-center gap-4">
-                              <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                              <div className={`h-12 w-12 bg-gradient-to-br ${planConfig.gradient} rounded-lg flex items-center justify-center`}>
                                 <Volume2 className="h-6 w-6 text-white" />
                               </div>
                               <div>
@@ -284,15 +338,40 @@ const Profile = () => {
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Button variant="ghost" size="sm">
+                              <Button variant="ghost" size="sm" title="Add to favorites">
                                 <Heart className={`h-4 w-4 ${song.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
                               </Button>
-                              <Button variant="ghost" size="sm">
-                                <Play className="h-4 w-4" />
-                              </Button>
-                              <Button variant="ghost" size="sm">
+                              
+                              {/* Play button - available for Pro+ with vocals, Pro with melody preview */}
+                              {song.hasVocals && (
+                                <Button variant="ghost" size="sm" title="Play AI vocal demo">
+                                  <Play className="h-4 w-4" />
+                                </Button>
+                              )}
+                              
+                              {/* View lyrics - available for all plans */}
+                              <Button variant="ghost" size="sm" title="View lyrics">
                                 <Eye className="h-4 w-4" />
                               </Button>
+                              
+                              {/* Download options vary by plan */}
+                              {userPlan === "basic" && (
+                                <Button variant="ghost" size="sm" title="Download lyrics (text only)">
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                              )}
+                              
+                              {userPlan === "pro" && (
+                                <Button variant="ghost" size="sm" title="Download lyrics + melody (MIDI)">
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                              )}
+                              
+                              {userPlan === "proplus" && (
+                                <Button variant="ghost" size="sm" title="Download full song (MP3)">
+                                  <Download className="h-4 w-4" />
+                                </Button>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -302,7 +381,7 @@ const Profile = () => {
                 </TabsContent>
 
                 <TabsContent value="favorites">
-                  <Card>
+                  <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Heart className="h-5 w-5 text-red-500" />
@@ -344,7 +423,7 @@ const Profile = () => {
                 </TabsContent>
 
                 <TabsContent value="collaborations">
-                  <Card>
+                  <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Users className="h-5 w-5" />
@@ -356,7 +435,7 @@ const Profile = () => {
                         {collaborations.map((collab) => (
                           <div key={collab.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                             <div className="flex items-center gap-4">
-                              <div className="h-12 w-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                              <div className={`h-12 w-12 bg-gradient-to-br ${planConfig.gradient} rounded-lg flex items-center justify-center`}>
                                 <Users className="h-6 w-6 text-white" />
                               </div>
                               <div>
@@ -379,15 +458,33 @@ const Profile = () => {
 
             {/* AI Profile Tab */}
             <TabsContent value="ai-profile" className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Mic className="h-5 w-5" />
-                      Voice Upload & Management
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+              {userPlan === "basic" ? (
+                /* Basic Plan - No AI Profile Features */
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
+                  <CardContent className="p-8 text-center">
+                    <Mic className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="text-xl font-semibold mb-2">AI Profile Features</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Voice upload, melody matching, and AI vocal features are available with Pro and Pro+ plans.
+                    </p>
+                    <Button 
+                      className={`bg-gradient-to-r ${planConfig.gradient} hover:opacity-90 text-white shadow-lg`}
+                      onClick={() => navigate("/plans")}
+                    >
+                      Upgrade to Pro
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6">
+                  <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Mic className="h-5 w-5" />
+                        {userPlan === "pro" ? "Voice Upload & Matching" : "Advanced Voice Training"}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
                     <div className="border-2 border-dashed rounded-lg p-6 text-center">
                       <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                       <p className="text-sm text-muted-foreground mb-4">
@@ -416,7 +513,7 @@ const Profile = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Star className="h-5 w-5" />
@@ -445,13 +542,14 @@ const Profile = () => {
                     ))}
                   </CardContent>
                 </Card>
-              </div>
+                </div>
+              )}
             </TabsContent>
 
             {/* Billing Tab */}
             <TabsContent value="billing" className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5" />
@@ -469,6 +567,11 @@ const Profile = () => {
                       <p className="text-2xl font-bold">
                         ${userPlan === "basic" ? "15" : userPlan === "pro" ? "25" : "40"}/month
                       </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {userPlan === "basic" ? "Just Getting Started" :
+                         userPlan === "pro" ? "For Serious Artists" :
+                         "For Professionals & Songwriters"}
+                      </p>
                       <p className="text-sm text-muted-foreground">
                         Next billing: February 8, 2025
                       </p>
@@ -479,10 +582,10 @@ const Profile = () => {
                       <div className="space-y-1">
                         <div className="flex justify-between text-sm">
                           <span>Used</span>
-                          <span>{50 - tokens}/50 tokens</span>
+                          <span>{maxTokens - tokens}/{maxTokens} tokens</span>
                         </div>
                         <Progress 
-                          value={((50 - tokens) / 50) * 100} 
+                          value={((maxTokens - tokens) / maxTokens) * 100} 
                           className="h-2"
                         />
                       </div>
@@ -497,7 +600,7 @@ const Profile = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle>Billing History</CardTitle>
                   </CardHeader>
@@ -525,7 +628,7 @@ const Profile = () => {
             {/* Account Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle>Profile Information</CardTitle>
                   </CardHeader>
@@ -559,7 +662,7 @@ const Profile = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle>Account Security</CardTitle>
                   </CardHeader>
@@ -579,6 +682,30 @@ const Profile = () => {
                         <Settings className="h-4 w-4 mr-2" />
                         Two-Factor Authentication
                       </Button>
+                      
+                      {userPlan === "pro" && (
+                        <Button variant="outline" className="w-full justify-start">
+                          <Volume2 className="h-4 w-4 mr-2" />
+                          Connect Spotify/YouTube
+                        </Button>
+                      )}
+                      
+                      {userPlan === "proplus" && (
+                        <>
+                          <Button variant="outline" className="w-full justify-start">
+                            <Volume2 className="h-4 w-4 mr-2" />
+                            Connect Music Profiles
+                          </Button>
+                          <Button variant="outline" className="w-full justify-start">
+                            <Users className="h-4 w-4 mr-2" />
+                            Team Access Management
+                          </Button>
+                          <Button variant="outline" className="w-full justify-start">
+                            <Download className="h-4 w-4 mr-2" />
+                            Export All Data
+                          </Button>
+                        </>
+                      )}
                     </div>
                     
                     <div className="pt-4 border-t">
@@ -597,7 +724,7 @@ const Profile = () => {
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
               <div className="grid md:grid-cols-3 gap-6">
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Volume2 className="h-5 w-5" />
@@ -608,7 +735,7 @@ const Profile = () => {
                     <div className="space-y-3">
                       {savedSongs.slice(0, 3).map((song) => (
                         <div key={song.id} className="flex items-center gap-3 p-2 hover:bg-muted/50 rounded-lg transition-colors">
-                          <div className="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded flex items-center justify-center">
+                          <div className={`h-8 w-8 bg-gradient-to-br ${planConfig.gradient} rounded flex items-center justify-center`}>
                             <Volume2 className="h-4 w-4 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -621,7 +748,7 @@ const Profile = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Star className="h-5 w-5" />
@@ -635,7 +762,7 @@ const Profile = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">Tokens used</span>
-                      <span className="font-medium">{50 - tokens}/50</span>
+                      <span className="font-medium">{maxTokens - tokens}/{maxTokens}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">Collaborations</span>
@@ -644,7 +771,7 @@ const Profile = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-2xl`}>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5" />
@@ -660,7 +787,7 @@ const Profile = () => {
                         <span>Tokens</span>
                         <span>{tokens} remaining</span>
                       </div>
-                      <Progress value={(tokens / 50) * 100} className="h-2" />
+                      <Progress value={(tokens / maxTokens) * 100} className="h-2" />
                     </div>
                     <Button 
                       size="sm" 
