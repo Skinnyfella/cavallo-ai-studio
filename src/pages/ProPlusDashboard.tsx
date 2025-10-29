@@ -92,7 +92,7 @@ const ProPlusDashboard = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/profile/proplus')}
               className="w-12 h-12 bg-purple-800/50 hover:bg-purple-700/50 text-purple-200 hover:text-white border border-purple-400/30 rounded-full"
             >
               <User className="w-5 h-5" />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -41,17 +41,45 @@ type Plan = "basic" | "pro" | "proplus";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [userPlan] = useState<Plan>("proplus");
-  const [tokens] = useState(32);
+  const { plan } = useParams<{ plan?: string }>();
+  
+  // Determine user plan from URL parameter or default to basic
+  const userPlan: Plan = (plan as Plan) || "basic";
+  
+  // Set tokens based on plan
+  const initialTokens = userPlan === "basic" ? 18 : userPlan === "pro" ? 27 : 42;
+  const [tokens] = useState(initialTokens);
   const [activeTab, setActiveTab] = useState("overview");
   const [genrePreferences, setGenrePreferences] = useState([70, 85, 60, 45, 90, 75]);
-  const [userProfile, setUserProfile] = useState({
-    name: "Sarah Williams",
-    username: "skinnybeats",
-    email: "sarah@example.com",
-    joinDate: "January 2024",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah"
-  });
+  // Plan-specific user profiles
+  const getUserProfile = (plan: Plan) => {
+    const profiles = {
+      basic: {
+        name: "Alex Johnson",
+        username: "alexbeats",
+        email: "alex@example.com",
+        joinDate: "March 2024",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex"
+      },
+      pro: {
+        name: "Sarah Williams", 
+        username: "sarahmusic",
+        email: "sarah@example.com",
+        joinDate: "January 2024",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah"
+      },
+      proplus: {
+        name: "Marcus Chen",
+        username: "marcusproducer", 
+        email: "marcus@example.com",
+        joinDate: "November 2023",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus"
+      }
+    };
+    return profiles[plan];
+  };
+  
+  const [userProfile, setUserProfile] = useState(getUserProfile(userPlan));
 
   const getPlanConfig = (plan: Plan) => {
     const configs = {

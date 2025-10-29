@@ -109,7 +109,7 @@ const ProDashboard = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/profile/pro')}
               className="w-12 h-12 bg-blue-800/50 hover:bg-blue-700/50 text-blue-200 hover:text-white border border-blue-400/30 rounded-full"
             >
               <User className="w-5 h-5" />

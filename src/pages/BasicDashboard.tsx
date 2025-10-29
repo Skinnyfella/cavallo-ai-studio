@@ -17,10 +17,21 @@ const BasicDashboard = () => {
     genre: '',
     mood: '',
     duration: '',
+    artistInspiration: '',
+    language: '',
     ideas: ''
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationsUsed, setGenerationsUsed] = useState(2);
+  const [generatedSong, setGeneratedSong] = useState<null | {
+    lyrics: { verse: string; chorus: string };
+    melodyGuide: {
+      vocalRange: string;
+      scale: string;
+      tempo: number;
+      hookSolfa: string;
+    };
+  }>(null);
   const maxGenerations = 3;
 
   const handleInputChange = (field: string, value: string) => {
@@ -33,7 +44,7 @@ const BasicDashboard = () => {
       return;
     }
 
-    if (!formData.title || !formData.genre || !formData.mood || !formData.duration) {
+    if (!formData.title || !formData.genre || !formData.mood || !formData.duration || !formData.artistInspiration || !formData.language) {
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -44,7 +55,28 @@ const BasicDashboard = () => {
     setTimeout(() => {
       setIsGenerating(false);
       setGenerationsUsed(prev => prev + 1);
-      toast.success("Your song is ready! Demo-quality audio available.");
+      
+      // Generate sample song data
+      setGeneratedSong({
+        lyrics: {
+          verse: `In the city lights, we dance tonight
+Hearts beating fast, everything feels right
+Your smile lights up the perfect skies
+Together we rise, we touch the stars tonight`,
+          chorus: `We're unstoppable, incredible
+Nothing can break us now
+We're unstoppable, unforgettable
+This is our moment, wow`
+        },
+        melodyGuide: {
+          vocalRange: "Medium",
+          scale: "A Major", 
+          tempo: 96,
+          hookSolfa: "m s l | s f m | r d |"
+        }
+      });
+      
+      toast.success("✨ Your song is ready! Lyrics and melody guide created.");
     }, 3000);
   };
 
@@ -84,7 +116,7 @@ const BasicDashboard = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/profile/basic')}
               className="w-12 h-12 bg-emerald-800/50 hover:bg-emerald-700/50 text-emerald-200 hover:text-white border border-emerald-400/30 rounded-full"
             >
               <User className="w-5 h-5" />
@@ -211,6 +243,57 @@ const BasicDashboard = () => {
                   </Select>
                 </div>
 
+                {/* Artist Inspiration & Language */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-emerald-200 mb-2">
+                      Artist Inspiration *
+                    </label>
+                    <Select onValueChange={(value) => handleInputChange('artistInspiration', value)}>
+                      <SelectTrigger className="bg-black/20 border-emerald-400/50 text-white">
+                        <SelectValue placeholder="Whose sound inspires you?" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black border-emerald-500">
+                        <SelectItem value="taylor-swift">Taylor Swift</SelectItem>
+                        <SelectItem value="drake">Drake</SelectItem>
+                        <SelectItem value="adele">Adele</SelectItem>
+                        <SelectItem value="ed-sheeran">Ed Sheeran</SelectItem>
+                        <SelectItem value="billie-eilish">Billie Eilish</SelectItem>
+                        <SelectItem value="bruno-mars">Bruno Mars</SelectItem>
+                        <SelectItem value="ariana-grande">Ariana Grande</SelectItem>
+                        <SelectItem value="post-malone">Post Malone</SelectItem>
+                        <SelectItem value="burna-boy">Burna Boy</SelectItem>
+                        <SelectItem value="wizkid">WizKid</SelectItem>
+                        <SelectItem value="beyonce">Beyoncé</SelectItem>
+                        <SelectItem value="the-weeknd">The Weeknd</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-emerald-200 mb-2">
+                      Language *
+                    </label>
+                    <Select onValueChange={(value) => handleInputChange('language', value)}>
+                      <SelectTrigger className="bg-black/20 border-emerald-400/50 text-white">
+                        <SelectValue placeholder="Select language" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black border-emerald-500">
+                        <SelectItem value="english">English</SelectItem>
+                        <SelectItem value="spanish">Spanish</SelectItem>
+                        <SelectItem value="french">French</SelectItem>
+                        <SelectItem value="yoruba">Yoruba</SelectItem>
+                        <SelectItem value="igbo">Igbo</SelectItem>
+                        <SelectItem value="hausa">Hausa</SelectItem>
+                        <SelectItem value="pidgin">Nigerian Pidgin</SelectItem>
+                        <SelectItem value="swahili">Swahili</SelectItem>
+                        <SelectItem value="portuguese">Portuguese</SelectItem>
+                        <SelectItem value="german">German</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 {/* Ideas */}
                 <div>
                   <label className="block text-sm font-medium text-emerald-200 mb-2">
@@ -234,12 +317,12 @@ const BasicDashboard = () => {
                   {isGenerating ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3" />
-                      AI is creating your song...
+                      ✨ Creating your song...
                     </>
                   ) : (
                     <>
                       <Music className="w-5 h-5 mr-3" />
-                      Generate My Song (1 Token)
+                      Generate My Song (4 Tokens)
                     </>
                   )}
                 </Button>
@@ -315,82 +398,116 @@ const BasicDashboard = () => {
           </div>
         </div>
 
-        {/* Demo Results Section - Shows after generation */}
-        {generationsUsed > 0 && (
+        {/* Your Song is Ready! Section - Shows after generation */}
+        {generatedSong && (
           <div className="mt-8">
-            <div className="grid lg:grid-cols-2 gap-6">
-            {/* Lyrics Preview */}
-            <Card className="p-6 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
-              <h3 className="text-xl font-semibold text-emerald-200 mb-4">Your Song is Ready! 🎵</h3>
-              <div className="space-y-4 text-sm text-emerald-300">
-                <div>
-                  <p className="font-medium mb-1 text-emerald-200">VERSE 1:</p>
-                  <p className="italic">In the city lights, we dance tonight</p>
-                  <p className="italic">Hearts beating fast, everything feels right</p>
-                  <p className="italic">Your smile lights up the darkest skies</p>
-                  <p className="italic">Together we rise, we touch the sky</p>
-                </div>
-                <div>
-                  <p className="font-medium mb-1 text-emerald-200">CHORUS:</p>
-                  <p className="italic">We're unstoppable, incredible</p>
-                  <p className="italic">Nothing can break us now</p>
-                  <p className="italic">We're unshakeable, unmistakable</p>
-                  <p className="italic">Together we'll show them how</p>
-                </div>
-              </div>
-            </Card>
+            <h2 className="text-2xl font-bold text-emerald-200 mb-6 text-center">🎵 Your Song is Ready!</h2>
             
-            {/* Audio Download */}
-            <Card className="p-6 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
-              <h3 className="text-xl font-semibold text-emerald-200 mb-4">
-                Demo Audio
-                <Badge className="ml-2 bg-emerald-600 text-white">Demo Quality</Badge>
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="bg-gradient-to-r from-emerald-50/10 to-green-50/10 rounded-lg p-4 border border-emerald-500/30 text-center">
-                  <Music className="w-12 h-12 text-emerald-300 mx-auto mb-2" />
-                  <p className="text-emerald-200 font-medium">Demo Track Ready!</p>
-                  <p className="text-sm text-emerald-300">High-quality demo version</p>
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Lyrics Section */}
+              <Card className="p-6 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
+                <h3 className="text-xl font-semibold text-emerald-200 mb-4 flex items-center">
+                  <Edit3 className="w-5 h-5 mr-2" />
+                  Lyrics Section
+                </h3>
+                <div className="space-y-4 text-sm text-emerald-300">
+                  <div>
+                    <p className="font-medium mb-2 text-emerald-200 flex items-center">
+                      <Volume2 className="w-4 h-4 mr-1" />
+                      VERSE:
+                    </p>
+                    <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-500/20">
+                      {generatedSong.lyrics.verse.split('\n').map((line, i) => (
+                        <p key={i} className="italic leading-relaxed">{line}</p>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="font-medium mb-2 text-emerald-200 flex items-center">
+                      <Music className="w-4 h-4 mr-1" />
+                      CHORUS:
+                    </p>
+                    <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-500/20">
+                      {generatedSong.lyrics.chorus.split('\n').map((line, i) => (
+                        <p key={i} className="italic leading-relaxed">{line}</p>
+                      ))}
+                    </div>
+                  </div>
                 </div>
+              </Card>
+            
+              {/* Melody Guide */}
+              <Card className="p-6 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
+                <h3 className="text-xl font-semibold text-emerald-200 mb-4 flex items-center">
+                  <Mic className="w-5 h-5 mr-2" />
+                  Melody Guide
+                </h3>
                 
-                <div className="space-y-2">
-                  <Button className="w-full bg-gradient-to-r from-emerald-600 to-green-600 text-white">
-                    <Play className="w-4 h-4 mr-2" />
-                    Play Demo Track
-                  </Button>
-                  <Button variant="outline" className="w-full border-emerald-400/50 text-emerald-200 hover:bg-emerald-600/20">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Demo (MP3)
-                  </Button>
-                </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-500/20">
+                      <p className="font-medium text-emerald-200 mb-1">Vocal Range:</p>
+                      <p className="text-emerald-300">{generatedSong.melodyGuide.vocalRange}</p>
+                    </div>
+                    <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-500/20">
+                      <p className="font-medium text-emerald-200 mb-1">Scale:</p>
+                      <p className="text-emerald-300">{generatedSong.melodyGuide.scale}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-emerald-900/20 rounded-lg p-3 border border-emerald-500/20">
+                    <p className="font-medium text-emerald-200 mb-1">Tempo:</p>
+                    <p className="text-emerald-300">{generatedSong.melodyGuide.tempo} BPM</p>
+                  </div>
+                  
+                  <div className="bg-emerald-900/20 rounded-lg p-4 border border-emerald-500/20">
+                    <p className="font-medium text-emerald-200 mb-2">Hook Solfa:</p>
+                    <p className="font-mono text-lg text-emerald-100 bg-black/30 rounded px-3 py-2 text-center tracking-wider">
+                      {generatedSong.melodyGuide.hookSolfa}
+                    </p>
+                    <p className="text-xs text-emerald-400 mt-2 text-center">Sing this melody pattern for the hook</p>
+                  </div>
 
-                <div className="text-xs text-emerald-400 pt-2 border-t border-emerald-500/30">
-                  <p>✅ AI-generated lyrics & melody</p>
-                  <p>✅ Demo-quality audio (192kbps)</p>
-                  <p>✅ Basic production mixing</p>
+                  <div className="text-xs text-emerald-400 pt-3 border-t border-emerald-500/30 space-y-1">
+                    <p>✅ AI-generated lyrics & melody guide</p>
+                    <p>✅ Vocal range optimized for beginners</p>
+                    <p>✅ Solfa notation for easy singing</p>
+                  </div>
                 </div>
+              </Card>
+            </div>
+
+            {/* Create Another Song */}
+            <Card className="mt-8 p-6 bg-gradient-to-r from-emerald-900/50 to-green-900/50 border border-emerald-500/30 text-center">
+              <h3 className="font-semibold text-emerald-200 mb-2 flex items-center justify-center">
+                <Music className="w-5 h-5 mr-2" />
+                Ready for another song? 
+              </h3>
+              <p className="text-emerald-300 mb-4">You have {maxGenerations - generationsUsed} generations left today.</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => {
+                    setGeneratedSong(null);
+                    setFormData({
+                      title: '',
+                      genre: '',
+                      mood: '',
+                      duration: '',
+                      artistInspiration: '',
+                      language: '',
+                      ideas: ''
+                    });
+                  }} 
+                  className="bg-gradient-to-r from-emerald-600 to-green-600 text-white"
+                >
+                  Create Another Song
+                </Button>
+                <Button variant="outline" onClick={() => navigate('/plans')} className="border-emerald-400/50 text-emerald-200 hover:bg-emerald-600/20">
+                  <Star className="w-4 h-4 mr-2" />
+                  Upgrade to Pro
+                </Button>
               </div>
             </Card>
-          </div>
-
-          {/* Create Another */}
-          <Card className="mt-6 p-6 bg-gradient-to-r from-emerald-900/50 to-green-900/50 border border-emerald-500/30 text-center">
-            <h3 className="font-semibold text-emerald-200 mb-2 flex items-center justify-center">
-              <Music className="w-5 h-5 mr-2" />
-              Ready for another song? 
-            </h3>
-            <p className="text-emerald-300 mb-4">You have {maxGenerations - generationsUsed} generations left today.</p>
-            <div className="flex gap-4 justify-center">
-              <Button onClick={() => window.location.reload()} className="bg-gradient-to-r from-emerald-600 to-green-600 text-white">
-                Create Another Song
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/plans')} className="border-emerald-400/50 text-emerald-200 hover:bg-emerald-600/20">
-                <Star className="w-4 h-4 mr-2" />
-                Upgrade to Pro
-              </Button>
-            </div>
-          </Card>
           </div>
         )}
       </div>
