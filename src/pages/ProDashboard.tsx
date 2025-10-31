@@ -37,6 +37,30 @@ const ProDashboard = () => {
   } | null>(null);
   const [showVoiceUploadModal, setShowVoiceUploadModal] = useState(false);
   
+  // Melody editor state
+  const [selectedKey, setSelectedKey] = useState('C Major');
+  const [showKeyDropdown, setShowKeyDropdown] = useState(false);
+  
+  // Auto-match voice state
+  const [isVoiceMatching, setIsVoiceMatching] = useState(false);
+  const [voiceMatchResult, setVoiceMatchResult] = useState<{
+    suggestedKey: string;
+    vocalRange: string;
+    confidence: number;
+  } | null>(null);
+  
+  // Melody preview state
+  const [isPreviewingMelody, setIsPreviewingMelody] = useState(false);
+  const [melodyPreviewSample, setMelodyPreviewSample] = useState<string>('');
+  const [isPlayingPreview, setIsPlayingPreview] = useState(false);
+  
+  // Available musical keys
+  const musicalKeys = [
+    'C Major', 'C# Major', 'D Major', 'D# Major', 'E Major', 
+    'F Major', 'F# Major', 'G Major', 'G# Major', 'A Major', 
+    'A# Major', 'B Major'
+  ];
+  
   // Popular artists database for suggestions
   const popularArtists = [
     // International Pop/R&B
@@ -127,6 +151,101 @@ const ProDashboard = () => {
     }
   };
 
+  // Helper functions to simulate voice analysis
+  const getOptimalKeyForVoice = () => {
+    // Simulate different voice types returning different keys
+    const voiceKeys = [
+      'G Major', 'A Major', 'F Major', 'C Major', 'D Major', 'E Major'
+    ];
+    return voiceKeys[Math.floor(Math.random() * voiceKeys.length)];
+  };
+
+  const getVocalRangeFromPitch = () => {
+    const ranges = ['Medium-Low', 'Medium', 'Medium-High', 'High'];
+    return ranges[Math.floor(Math.random() * ranges.length)];
+  };
+
+  // Sample melody lyrics for preview
+  const melodyPreviewLines = [
+    "There's fire on the mountain tonight",
+    "Dancing through the shadows of light", 
+    "Every heartbeat tells a story untold",
+    "Rising like the morning sun so bold",
+    "Whispers in the wind call out my name",
+    "Nothing will ever be the same"
+  ];
+
+  // Melody preview function
+  const handlePreviewMelody = async () => {
+    if (!hasPrimaryVoice || !primaryVoice) {
+      toast.error("Please upload your primary voice first");
+      setShowVoiceUploadModal(true);
+      return;
+    }
+
+    setIsPreviewingMelody(true);
+    
+    try {
+      // Pick a random preview line
+      const randomLine = melodyPreviewLines[Math.floor(Math.random() * melodyPreviewLines.length)];
+      setMelodyPreviewSample(randomLine);
+      
+      // Simulate AI melody generation with user's voice
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      
+      // Start "playing" the preview
+      setIsPlayingPreview(true);
+      toast.success(`Generated melody preview in ${selectedKey} using ${primaryVoice.name}`);
+      
+      // Simulate playback duration (6 seconds)
+      setTimeout(() => {
+        setIsPlayingPreview(false);
+        toast.info("Preview complete! Like what you heard?");
+      }, 6000);
+      
+    } catch (error) {
+      toast.error("Preview generation failed. Please try again.");
+    } finally {
+      setIsPreviewingMelody(false);
+    }
+  };
+
+  // Auto-match voice function
+  const handleAutoMatchVoice = async () => {
+    if (!hasPrimaryVoice || !primaryVoice) {
+      toast.error("Please upload your primary voice first");
+      setShowVoiceUploadModal(true);
+      return;
+    }
+
+    setIsVoiceMatching(true);
+    
+    try {
+      // Simulate voice analysis (replace with actual backend call later)
+      await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second simulation
+      
+      // Mock voice analysis results (replace with actual backend response)
+      const mockAnalysis = {
+        suggestedKey: getOptimalKeyForVoice(),
+        vocalRange: getVocalRangeFromPitch(),
+        confidence: Math.floor(Math.random() * 20) + 80 // 80-100% confidence
+      };
+      
+      setVoiceMatchResult(mockAnalysis);
+      setSelectedKey(mockAnalysis.suggestedKey);
+      
+      toast.success(
+        `Voice matched! Key: ${mockAnalysis.suggestedKey}, Range: ${mockAnalysis.vocalRange}`,
+        { duration: 4000 }
+      );
+      
+    } catch (error) {
+      toast.error("Voice matching failed. Please try again.");
+    } finally {
+      setIsVoiceMatching(false);
+    }
+  };
+
   const handleGenerate = async () => {
     if (generationsUsed >= maxGenerations) {
       toast.error("Daily limit reached! Upgrade to Pro+ for unlimited generations.");
@@ -208,6 +327,21 @@ const ProDashboard = () => {
         <p className="text-blue-200 text-lg">
           Upload your voice and let AI sing with your style! 🎤
         </p>
+        
+        {/* Voice Status Indicator */}
+        {voiceMatchResult && (
+          <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-green-400 text-sm font-medium">Voice Optimized</span>
+              </div>
+              <span className="text-green-300 text-xs">
+                {voiceMatchResult.suggestedKey} • {voiceMatchResult.vocalRange}
+              </span>
+            </div>
+          </div>
+        )}
         
         {/* Generation Progress */}
         <div className="mt-4">
@@ -606,29 +740,85 @@ const ProDashboard = () => {
                 <div>
                   <h4 className="font-semibold text-blue-200 mb-4">Visual Pitch Guide</h4>
                   <div className="bg-black/20 rounded-lg p-6 border border-blue-500/30">
+                    {/* Voice Match Success Banner */}
+                    {voiceMatchResult && (
+                      <div className="mb-4 p-3 bg-gradient-to-r from-green-900/30 to-cyan-900/30 border border-green-500/40 rounded-lg">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                          <span className="text-green-400 text-sm font-medium">Voice Matched!</span>
+                        </div>
+                        <p className="text-xs text-green-300">
+                          Melody optimized for your voice: {voiceMatchResult.suggestedKey}, {voiceMatchResult.vocalRange} range
+                        </p>
+                      </div>
+                    )}
+                    
                     <div className="space-y-2 mb-4">
                       <div className="flex justify-between text-sm text-blue-300">
                         <span>Vocal Range:</span>
-                        <span className="font-medium text-blue-200">Medium (Safe for most singers)</span>
+                        <span className="font-medium text-blue-200">
+                          {voiceMatchResult?.vocalRange || "Medium (Safe for most singers)"}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm text-blue-300">
                         <span>Key:</span>
-                        <span className="font-medium text-blue-200">C Major</span>
+                        <span className="font-medium text-blue-200">{selectedKey}</span>
                       </div>
                       <div className="flex justify-between text-sm text-blue-300">
                         <span>Tempo:</span>
                         <span className="font-medium text-blue-200">120 BPM</span>
                       </div>
+                      {voiceMatchResult && (
+                        <div className="flex justify-between text-sm text-blue-300">
+                          <span>Voice Match:</span>
+                          <span className="font-medium text-green-400">
+                            {voiceMatchResult.confidence}% confidence
+                          </span>
+                        </div>
+                      )}
                     </div>
+
+                    {/* Melody Preview Display */}
+                    {melodyPreviewSample && (
+                      <div className="mb-4 p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/40 rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`w-2 h-2 rounded-full ${isPlayingPreview ? 'bg-green-400 animate-pulse' : 'bg-purple-400'}`}></div>
+                          <span className="text-purple-400 text-sm font-medium">
+                            {isPlayingPreview ? 'Now Playing' : 'Preview Generated'}
+                          </span>
+                        </div>
+                        <div className="bg-black/30 rounded p-3 mb-2">
+                          <p className="text-white text-sm italic">"{melodyPreviewSample}"</p>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-purple-300">Key: {selectedKey}</span>
+                          <span className="text-purple-300">Voice: {primaryVoice?.name}</span>
+                        </div>
+                        {isPlayingPreview && (
+                          <div className="mt-2">
+                            <div className="w-full bg-gray-700 rounded-full h-1">
+                              <div className="bg-green-400 h-1 rounded-full animate-pulse" style={{width: '60%'}}></div>
+                            </div>
+                            <p className="text-xs text-green-400 mt-1">Playing melody preview...</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     
                     {/* Mock Pitch Visualization */}
                     <div className="bg-black/40 rounded p-4 border border-blue-500/20">
-                      <div className="text-xs text-blue-400 mb-2">Pitch Pattern:</div>
+                      <div className="text-xs text-blue-400 mb-2">
+                        Pitch Pattern {voiceMatchResult ? "(Optimized for your voice)" : ""}:
+                      </div>
                       <div className="flex items-end justify-between h-20 gap-1">
                         {[40, 60, 45, 70, 55, 80, 65, 50, 75, 60, 45, 65].map((height, i) => (
                           <div 
                             key={i} 
-                            className="bg-gradient-to-t from-blue-600 to-cyan-400 w-4 rounded-t"
+                            className={`w-4 rounded-t ${
+                              voiceMatchResult 
+                                ? "bg-gradient-to-t from-green-600 to-cyan-400" 
+                                : "bg-gradient-to-t from-blue-600 to-cyan-400"
+                            }`}
                             style={{ height: `${height}%` }}
                           />
                         ))}
@@ -641,21 +831,64 @@ const ProDashboard = () => {
                 <div>
                   <h4 className="font-semibold text-blue-200 mb-4">Melody Controls</h4>
                   <div className="space-y-4">
-                    <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+                    <Button 
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                      onClick={() => setShowKeyDropdown(true)}
+                    >
                       <Settings className="w-4 h-4 mr-2" />
                       Change Key
                     </Button>
-                    <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white">
-                      <Volume2 className="w-4 h-4 mr-2" />
-                      Auto-match My Voice
+                    <Button 
+                      onClick={handleAutoMatchVoice}
+                      disabled={isVoiceMatching || !hasPrimaryVoice}
+                      className="w-full bg-cyan-500 hover:bg-cyan-600 text-white disabled:opacity-50"
+                    >
+                      {isVoiceMatching ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                          Analyzing your voice...
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-4 h-4 mr-2" />
+                          Auto-match My Voice
+                        </>
+                      )}
                     </Button>
-                    <Button variant="outline" className="w-full border-blue-400/50 text-blue-200 hover:bg-blue-600/20">
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-blue-400/50 text-blue-200 hover:bg-blue-600/20"
+                      onClick={() => toast.info("Tip: Use 'Preview Melody' to hear your voice with different keys and ranges!")}
+                    >
                       <Edit3 className="w-4 h-4 mr-2" />
-                      Manual Pitch Editing
+                      Melody Tips & Guide
                     </Button>
-                    <Button variant="outline" className="w-full border-blue-400/50 text-blue-200 hover:bg-blue-600/20">
-                      <Play className="w-4 h-4 mr-2" />
-                      Preview Melody
+                    <Button 
+                      onClick={handlePreviewMelody}
+                      disabled={isPreviewingMelody || !hasPrimaryVoice}
+                      className={`w-full ${
+                        isPlayingPreview 
+                          ? "bg-green-600 hover:bg-green-700 text-white animate-pulse" 
+                          : "border-blue-400/50 text-blue-200 hover:bg-blue-600/20"
+                      }`}
+                      variant={isPlayingPreview ? "default" : "outline"}
+                    >
+                      {isPreviewingMelody ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                          Generating Preview...
+                        </>
+                      ) : isPlayingPreview ? (
+                        <>
+                          <Volume2 className="w-4 h-4 mr-2" />
+                          Playing Preview...
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-4 h-4 mr-2" />
+                          Preview Melody
+                        </>
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -780,6 +1013,44 @@ const ProDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Key Selection Modal */}
+      <Dialog open={showKeyDropdown} onOpenChange={setShowKeyDropdown}>
+        <DialogContent className="bg-gray-900 border-blue-500 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-blue-200">
+              Select Musical Key
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 p-4">
+            <p className="text-blue-300 text-sm">
+              Current Key: <span className="font-semibold text-blue-200">{selectedKey}</span>
+            </p>
+            
+            <div className="grid grid-cols-2 gap-3">
+              {musicalKeys.map((key) => (
+                <Button
+                  key={key}
+                  variant={selectedKey === key ? "default" : "outline"}
+                  className={`${
+                    selectedKey === key 
+                      ? "bg-blue-600 text-white" 
+                      : "border-blue-400/50 text-blue-200 hover:bg-blue-600/20"
+                  }`}
+                  onClick={() => {
+                    setSelectedKey(key);
+                    setShowKeyDropdown(false);
+                    toast.success(`Key changed to ${key}`);
+                  }}
+                >
+                  {key}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Voice Upload Modal */}
       <Dialog open={showVoiceUploadModal} onOpenChange={setShowVoiceUploadModal}>

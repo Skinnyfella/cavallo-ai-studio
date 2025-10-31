@@ -35,6 +35,37 @@ const ProPlusDashboard = () => {
   const [showVoiceUploadModal, setShowVoiceUploadModal] = useState(false);
   const voiceFileInputRef = useRef<HTMLInputElement>(null);
   
+  // Melody preview state  
+  const [isPreviewingMelody, setIsPreviewingMelody] = useState(false);
+  const [melodyPreviewSample, setMelodyPreviewSample] = useState<string>('');
+  const [isPlayingPreview, setIsPlayingPreview] = useState(false);
+  
+  // Melody editor state
+  const [selectedKey, setSelectedKey] = useState('C Major');
+  const [showKeyDropdown, setShowKeyDropdown] = useState(false);
+  
+  // Auto-match voice state
+  const [isVoiceMatching, setIsVoiceMatching] = useState(false);
+  const [voiceMatchResult, setVoiceMatchResult] = useState<{
+    suggestedKey: string;
+    vocalRange: string;
+    confidence: number;
+  } | null>(null);
+  
+  // Available keys for the dropdown
+  const availableKeys = [
+    'C Major',
+    'C# Major', 
+    'D Major',
+    'D# Major',
+    'E Major',
+    'F Major',
+    'F# Major',
+    'G Major',
+    'A Major',
+    'B Major'
+  ];
+  
   // Popular artists database for suggestions
   const popularArtists = [
     // International Pop/R&B
@@ -123,6 +154,101 @@ const ProPlusDashboard = () => {
           toast.info('Voice setup complete! Ready for beat creation.');
         }, 1000);
       }
+    }
+  };
+
+  // Helper functions to simulate voice analysis
+  const getOptimalKeyForVoice = () => {
+    // Simulate different voice types returning different keys
+    const voiceKeys = [
+      'G Major', 'A Major', 'F Major', 'C Major', 'D Major', 'E Major'
+    ];
+    return voiceKeys[Math.floor(Math.random() * voiceKeys.length)];
+  };
+
+  const getVocalRangeFromPitch = () => {
+    const ranges = ['Medium-Low', 'Medium', 'Medium-High', 'High'];
+    return ranges[Math.floor(Math.random() * ranges.length)];
+  };
+
+  // Sample melody lyrics for preview
+  const melodyPreviewLines = [
+    "There's fire on the mountain tonight",
+    "Dancing through the shadows of light", 
+    "Every heartbeat tells a story untold",
+    "Rising like the morning sun so bold",
+    "Whispers in the wind call out my name",
+    "Nothing will ever be the same"
+  ];
+
+  // Melody preview function
+  const handlePreviewMelody = async () => {
+    if (!hasPrimaryVoice || !primaryVoice) {
+      toast.error("Please upload your primary voice first");
+      setShowVoiceUploadModal(true);
+      return;
+    }
+
+    setIsPreviewingMelody(true);
+    
+    try {
+      // Pick a random preview line
+      const randomLine = melodyPreviewLines[Math.floor(Math.random() * melodyPreviewLines.length)];
+      setMelodyPreviewSample(randomLine);
+      
+      // Simulate AI melody generation with user's voice
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      
+      // Start "playing" the preview
+      setIsPlayingPreview(true);
+      toast.success(`Generated melody preview in ${selectedKey} using ${primaryVoice.name}`);
+      
+      // Simulate playback duration (6 seconds)
+      setTimeout(() => {
+        setIsPlayingPreview(false);
+        toast.info("Preview complete! Ready for full beat creation?");
+      }, 6000);
+      
+    } catch (error) {
+      toast.error("Preview generation failed. Please try again.");
+    } finally {
+      setIsPreviewingMelody(false);
+    }
+  };
+
+  // Auto-match voice function
+  const handleAutoMatchVoice = async () => {
+    if (!hasPrimaryVoice || !primaryVoice) {
+      toast.error("Please upload your primary voice first");
+      setShowVoiceUploadModal(true);
+      return;
+    }
+
+    setIsVoiceMatching(true);
+    
+    try {
+      // Simulate voice analysis (replace with actual backend call later)
+      await new Promise(resolve => setTimeout(resolve, 3000)); // 3 second simulation
+      
+      // Mock voice analysis results (replace with actual backend response)
+      const mockAnalysis = {
+        suggestedKey: getOptimalKeyForVoice(),
+        vocalRange: getVocalRangeFromPitch(),
+        confidence: Math.floor(Math.random() * 20) + 80 // 80-100% confidence
+      };
+      
+      setVoiceMatchResult(mockAnalysis);
+      setSelectedKey(mockAnalysis.suggestedKey);
+      
+      toast.success(
+        `Voice matched! Key: ${mockAnalysis.suggestedKey}, Range: ${mockAnalysis.vocalRange}`,
+        { duration: 4000 }
+      );
+      
+    } catch (error) {
+      toast.error("Voice matching failed. Please try again.");
+    } finally {
+      setIsVoiceMatching(false);
     }
   };
 
@@ -596,6 +722,21 @@ const ProPlusDashboard = () => {
                     </div>
                   </div>
 
+                  {/* Key Selector */}
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200 mb-3">
+                      <Settings className="w-4 h-4 inline mr-2" />
+                      Musical Key
+                    </label>
+                    <Button 
+                      className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                      onClick={() => setShowKeyDropdown(true)}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Change Key ({selectedKey})
+                    </Button>
+                  </div>
+
                   <Button className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
                     <Play className="w-4 h-4 mr-2" />
                     Generate Beat
@@ -900,6 +1041,44 @@ const ProPlusDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Key Selection Modal */}
+      <Dialog open={showKeyDropdown} onOpenChange={setShowKeyDropdown}>
+        <DialogContent className="bg-gray-900 border-purple-500 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-purple-200">
+              Select Musical Key
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 p-4">
+            <p className="text-purple-300 text-sm">
+              Current Key: <span className="font-semibold text-purple-200">{selectedKey}</span>
+            </p>
+            
+            <div className="grid grid-cols-2 gap-3">
+              {availableKeys.map((key) => (
+                <Button
+                  key={key}
+                  variant={selectedKey === key ? "default" : "outline"}
+                  className={`${
+                    selectedKey === key 
+                      ? "bg-purple-600 text-white" 
+                      : "border-purple-400/50 text-purple-200 hover:bg-purple-600/20"
+                  }`}
+                  onClick={() => {
+                    setSelectedKey(key);
+                    setShowKeyDropdown(false);
+                    toast.success(`Key changed to ${key}`);
+                  }}
+                >
+                  {key}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Voice Upload Modal */}
       <Dialog open={showVoiceUploadModal} onOpenChange={setShowVoiceUploadModal}>
