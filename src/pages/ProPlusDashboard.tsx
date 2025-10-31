@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, User } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, User, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ProPlusDashboard = () => {
@@ -27,6 +28,12 @@ const ProPlusDashboard = () => {
   });
   const [artistSuggestions, setArtistSuggestions] = useState<string[]>([]);
   const [showArtistSuggestions, setShowArtistSuggestions] = useState(false);
+  
+  // Voice management state
+  const [hasPrimaryVoice, setHasPrimaryVoice] = useState(false);
+  const [primaryVoice, setPrimaryVoice] = useState<{name: string, uploadDate: string} | null>(null);
+  const [showVoiceUploadModal, setShowVoiceUploadModal] = useState(false);
+  const voiceFileInputRef = useRef<HTMLInputElement>(null);
   
   // Popular artists database for suggestions
   const popularArtists = [
@@ -82,19 +89,54 @@ const ProPlusDashboard = () => {
     setShowArtistSuggestions(false);
   };
 
+  // Voice management functions
+  useEffect(() => {
+    // Check for existing primary voice on component mount
+    const savedVoice = localStorage.getItem('primaryVoice');
+    if (savedVoice) {
+      const voiceData = JSON.parse(savedVoice);
+      setPrimaryVoice(voiceData);
+      setHasPrimaryVoice(true);
+    }
+  }, []);
+
+  const handleVoiceUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Simulate voice processing and save as primary voice
+      const voiceData = {
+        name: file.name,
+        uploadDate: new Date().toLocaleDateString()
+      };
+      
+      localStorage.setItem('primaryVoice', JSON.stringify(voiceData));
+      setPrimaryVoice(voiceData);
+      setHasPrimaryVoice(true);
+      setShowVoiceUploadModal(false);
+      
+      toast.success('Primary voice uploaded successfully!');
+    }
+  };
+
   const handleGenerate = async () => {
     if (!formData.title || !formData.genre || !formData.mood || !formData.duration || !formData.artistInspiration || !formData.language) {
       toast.error("Please fill in all required fields.");
       return;
     }
 
+    // Check for primary voice before generating
+    if (!hasPrimaryVoice) {
+      setShowVoiceUploadModal(true);
+      return;
+    }
+
     setIsGenerating(true);
     
-    // Simulate AI generation
+    // Simulate AI generation with primary voice
     setTimeout(() => {
       setIsGenerating(false);
       setActiveTab('results');
-      toast.success("Complete songwriter suite ready! Professional stems available.");
+      toast.success(`Complete songwriter suite ready using ${primaryVoice?.name}! Professional stems available.`);
     }, 5000);
   };
 
@@ -853,6 +895,86 @@ const ProPlusDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Voice Upload Modal */}
+      <Dialog open={showVoiceUploadModal} onOpenChange={setShowVoiceUploadModal}>
+        <DialogContent className="bg-gray-900 border-purple-500 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-purple-200">
+              Upload Your Primary Voice
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 p-4">
+            <div className="text-center">
+              <Mic className="h-16 w-16 mx-auto mb-4 text-purple-400" />
+              <p className="text-purple-200 mb-2">
+                Upload a voice sample to personalize your AI singer
+              </p>
+              <p className="text-sm text-purple-300">
+                Best results with 10-30 second clear recordings
+              </p>
+            </div>
+
+            {/* File Upload */}
+            <div className="space-y-4">
+              <Button
+                onClick={() => voiceFileInputRef.current?.click()}
+                className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white py-3"
+              >
+                <Upload className="h-5 w-5 mr-2" />
+                Choose Audio File
+              </Button>
+              
+              <input
+                ref={voiceFileInputRef}
+                type="file"
+                accept="audio/*"
+                onChange={handleVoiceUpload}
+                className="hidden"
+              />
+
+              <div className="text-xs text-purple-400 text-center">
+                Supported formats: MP3, WAV, M4A, AAC
+              </div>
+            </div>
+
+            {/* Current Voice Status */}
+            {hasPrimaryVoice && primaryVoice && (
+              <div className="p-4 bg-purple-900/30 rounded-lg border border-purple-500/30">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 bg-purple-600 rounded-full flex items-center justify-center">
+                    <Mic className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-purple-200">Current Primary Voice</p>
+                    <p className="text-sm text-purple-300">{primaryVoice.name}</p>
+                    <p className="text-xs text-purple-400">Uploaded {primaryVoice.uploadDate}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowVoiceUploadModal(false)}
+                className="flex-1 border-purple-400/50 text-purple-200 hover:bg-purple-600/20"
+              >
+                Cancel
+              </Button>
+              {hasPrimaryVoice && (
+                <Button
+                  onClick={() => setShowVoiceUploadModal(false)}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
+                >
+                  Continue
+                </Button>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
