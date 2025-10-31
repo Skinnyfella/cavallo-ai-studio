@@ -115,6 +115,14 @@ const ProPlusDashboard = () => {
       setShowVoiceUploadModal(false);
       
       toast.success('Primary voice uploaded successfully!');
+      
+      // If user came from generate button, automatically go to beats editor
+      if (activeTab === 'voice') {
+        setTimeout(() => {
+          setActiveTab('beats');
+          toast.info('Voice setup complete! Ready for beat creation.');
+        }, 1000);
+      }
     }
   };
 
@@ -124,20 +132,17 @@ const ProPlusDashboard = () => {
       return;
     }
 
-    // Check for primary voice before generating
+    // Check for primary voice and navigate accordingly
     if (!hasPrimaryVoice) {
-      setShowVoiceUploadModal(true);
+      // No primary voice - go to voice setup
+      setActiveTab('voice');
+      toast.info("Please set up your primary voice first");
       return;
     }
 
-    setIsGenerating(true);
-    
-    // Simulate AI generation with primary voice
-    setTimeout(() => {
-      setIsGenerating(false);
-      setActiveTab('results');
-      toast.success(`Complete songwriter suite ready using ${primaryVoice?.name}! Professional stems available.`);
-    }, 5000);
+    // Has primary voice - go directly to beats editor
+    setActiveTab('beats');
+    toast.success(`Using ${primaryVoice?.name} for AI singing. Ready for beat creation!`);
   };
 
   return (

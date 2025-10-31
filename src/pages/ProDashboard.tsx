@@ -113,6 +113,14 @@ const ProDashboard = () => {
         setShowVoiceUploadModal(false);
         
         toast.success(`Voice file "${file.name}" set as your primary voice!`);
+        
+        // If user came from generate button, automatically go to melody editor
+        if (activeTab === 'voice') {
+          setTimeout(() => {
+            setActiveTab('melody');
+            toast.info('Voice setup complete! Ready for melody editing.');
+          }, 1000);
+        }
       } else {
         toast.error("Please upload a valid audio file.");
       }
@@ -130,22 +138,17 @@ const ProDashboard = () => {
       return;
     }
 
-    // Check for primary voice before generating
+    // Check for primary voice and navigate accordingly
     if (!hasPrimaryVoice) {
-      toast.error("Please upload your primary voice first to create AI vocals!");
-      setShowVoiceUploadModal(true);
+      // No primary voice - go to voice setup
+      setActiveTab('voice');
+      toast.info("Please set up your primary voice first");
       return;
     }
 
-    setIsGenerating(true);
-    
-    // Simulate AI generation
-    setTimeout(() => {
-      setIsGenerating(false);
-      setGenerationsUsed(prev => prev + 1);
-      setActiveTab('results');
-      toast.success("Your AI singer is ready! Voice-matched audio available.");
-    }, 4000);
+    // Has primary voice - go directly to melody editor
+    setActiveTab('melody');
+    toast.success(`Using ${primaryVoice?.name} for AI singing. Ready for melody editing!`);
   };
 
   const toggleRecording = () => {
