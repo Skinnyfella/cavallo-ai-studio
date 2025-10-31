@@ -37,7 +37,18 @@ const ProDashboard = () => {
   } | null>(null);
   const [showVoiceUploadModal, setShowVoiceUploadModal] = useState(false);
   
-  // Melody editor state
+  // Voice profile for professional optimization
+  const [voiceProfile, setVoiceProfile] = useState<{
+    optimalKeys: string[];
+    vocalRange: string;
+    rangeDetail: string;
+    voiceCharacteristics: string[];
+    confidenceScore: number;
+    preferredTempo: number[];
+    isAnalyzed: boolean;
+  } | null>(null);
+  
+  // Key selection state
   const [selectedKey, setSelectedKey] = useState('C Major');
   const [showKeyDropdown, setShowKeyDropdown] = useState(false);
   
@@ -87,13 +98,24 @@ const ProDashboard = () => {
   const [activeTab, setActiveTab] = useState('create');
   const maxGenerations = 10;
 
-  // Check for primary voice on component mount (simulate API call)
+  // Check for primary voice and profile on component mount (simulate API call)
   React.useEffect(() => {
     const savedVoice = localStorage.getItem('primaryVoice');
+    const savedProfile = localStorage.getItem('voiceProfile');
+    
     if (savedVoice) {
       const voiceData = JSON.parse(savedVoice);
       setPrimaryVoice(voiceData);
       setHasPrimaryVoice(true);
+    }
+    
+    if (savedProfile) {
+      const profileData = JSON.parse(savedProfile);
+      setVoiceProfile(profileData);
+      // Auto-set optimal key from profile
+      if (profileData.optimalKeys && profileData.optimalKeys.length > 0) {
+        setSelectedKey(profileData.optimalKeys[0]);
+      }
     }
   }, []);
 
@@ -131,12 +153,26 @@ const ProDashboard = () => {
           uploadDate: new Date().toLocaleDateString(),
           duration: "0:15" // Simulated duration
         };
+        
+        // Create comprehensive voice profile (simulate AI analysis)
+        const profileData = {
+          optimalKeys: ['G Major', 'A Major', 'F Major'], // AI-determined optimal keys
+          vocalRange: 'Medium',
+          rangeDetail: 'C4-G5', // Specific range from analysis
+          voiceCharacteristics: ['Warm', 'Clear', 'Expressive'],
+          confidenceScore: 94, // AI confidence in analysis
+          preferredTempo: [120, 140], // BPM range that suits their voice
+          isAnalyzed: true
+        };
+        
         localStorage.setItem('primaryVoice', JSON.stringify(voiceData));
+        localStorage.setItem('voiceProfile', JSON.stringify(profileData));
         setPrimaryVoice(voiceData);
+        setVoiceProfile(profileData);
         setHasPrimaryVoice(true);
         setShowVoiceUploadModal(false);
         
-        toast.success(`Voice file "${file.name}" set as your primary voice!`);
+        toast.success(`Voice analyzed! Profile created with ${profileData.confidenceScore}% accuracy.`);
         
         // If user came from generate button, automatically go to melody editor
         if (activeTab === 'voice') {
@@ -265,9 +301,25 @@ const ProDashboard = () => {
       return;
     }
 
-    // Has primary voice - go directly to melody editor
-    setActiveTab('melody');
-    toast.success(`Using ${primaryVoice?.name} for AI singing. Ready for melody editing!`);
+    setIsGenerating(true);
+    
+    // Professional AI generation with voice optimization
+    setTimeout(() => {
+      setIsGenerating(false);
+      setGenerationsUsed(prev => prev + 1);
+      
+      // Auto-optimize using voice profile
+      if (voiceProfile && voiceProfile.isAnalyzed) {
+        // Apply optimal settings from voice profile
+        setSelectedKey(voiceProfile.optimalKeys[0]);
+        setActiveTab('results');
+        toast.success(`AI optimized your song using your voice profile! Key: ${voiceProfile.optimalKeys[0]}, Range: ${voiceProfile.vocalRange}`);
+      } else {
+        // Fallback to melody editor if no profile
+        setActiveTab('melody');
+        toast.success(`Song generated! Review your AI-optimized melody.`);
+      }
+    }, 4000);
   };
 
   const toggleRecording = () => {
@@ -733,22 +785,40 @@ const ProDashboard = () => {
           {/* Melody Editor Tab */}
           <TabsContent value="melody">
             <Card className="p-8 bg-black/40 backdrop-blur-xl border-blue-500/30 shadow-2xl shadow-blue-500/20">
-              <h3 className="text-xl font-semibold text-blue-200 mb-6">Melody Editor & Pitch Guide</h3>
+              <h3 className="text-xl font-semibold text-blue-200 mb-6">AI-Optimized Melody {voiceProfile ? '(Voice Matched)' : '(Review & Approve)'}</h3>
               
               <div className="grid lg:grid-cols-2 gap-8">
                 {/* Pitch Guide */}
                 <div>
-                  <h4 className="font-semibold text-blue-200 mb-4">Visual Pitch Guide</h4>
+                  <h4 className="font-semibold text-blue-200 mb-4">AI Voice Optimization</h4>
                   <div className="bg-black/20 rounded-lg p-6 border border-blue-500/30">
-                    {/* Voice Match Success Banner */}
-                    {voiceMatchResult && (
+                    {/* Voice Profile Status */}
+                    {voiceProfile ? (
                       <div className="mb-4 p-3 bg-gradient-to-r from-green-900/30 to-cyan-900/30 border border-green-500/40 rounded-lg">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-2">
                           <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                          <span className="text-green-400 text-sm font-medium">Voice Matched!</span>
+                          <span className="text-green-400 text-sm font-medium">Voice Optimized</span>
+                          <span className="text-green-300 text-xs ml-auto">{voiceProfile.confidenceScore}% match</span>
                         </div>
-                        <p className="text-xs text-green-300">
-                          Melody optimized for your voice: {voiceMatchResult.suggestedKey}, {voiceMatchResult.vocalRange} range
+                        <p className="text-xs text-green-300 mb-2">
+                          AI selected optimal settings for your voice profile
+                        </p>
+                        <div className="flex gap-2 flex-wrap">
+                          {voiceProfile.voiceCharacteristics.map((char, i) => (
+                            <span key={i} className="px-2 py-1 bg-green-900/30 text-green-300 text-xs rounded">
+                              {char}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mb-4 p-3 bg-gradient-to-r from-blue-900/30 to-cyan-900/30 border border-blue-500/40 rounded-lg">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                          <span className="text-blue-400 text-sm font-medium">Standard Settings</span>
+                        </div>
+                        <p className="text-xs text-blue-300">
+                          Upload your voice for personalized optimization
                         </p>
                       </div>
                     )}
@@ -757,16 +827,22 @@ const ProDashboard = () => {
                       <div className="flex justify-between text-sm text-blue-300">
                         <span>Vocal Range:</span>
                         <span className="font-medium text-blue-200">
-                          {voiceMatchResult?.vocalRange || "Medium (Safe for most singers)"}
+                          {voiceProfile ? `${voiceProfile.vocalRange} (${voiceProfile.rangeDetail})` : "Medium (Safe for most singers)"}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm text-blue-300">
-                        <span>Key:</span>
-                        <span className="font-medium text-blue-200">{selectedKey}</span>
+                        <span>Optimal Key:</span>
+                        <span className="font-medium text-blue-200">
+                          {voiceProfile ? voiceProfile.optimalKeys[0] : selectedKey}
+                          {voiceProfile && <span className="text-green-400 text-xs ml-1">✓ AI Selected</span>}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm text-blue-300">
-                        <span>Tempo:</span>
-                        <span className="font-medium text-blue-200">120 BPM</span>
+                        <span>Optimal BPM:</span>
+                        <span className="font-medium text-blue-200">
+                          {voiceProfile ? `${voiceProfile.preferredTempo[0]}-${voiceProfile.preferredTempo[1]} BPM` : "120 BPM"}
+                          {voiceProfile && <span className="text-green-400 text-xs ml-1">✓ Voice Matched</span>}
+                        </span>
                       </div>
                       {voiceMatchResult && (
                         <div className="flex justify-between text-sm text-blue-300">
@@ -898,6 +974,27 @@ const ProDashboard = () => {
 
           {/* Results Tab */}
           <TabsContent value="results">
+            {/* Voice Optimization Header */}
+            {voiceProfile && (
+              <Card className="p-4 bg-gradient-to-r from-green-900/20 to-cyan-900/20 border-green-500/30 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-green-400">AI-Optimized for Your Voice</h3>
+                      <p className="text-sm text-green-300">
+                        Generated using your voice profile • {voiceProfile.confidenceScore}% accuracy match
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-green-400 font-medium">{voiceProfile.optimalKeys[0]}</p>
+                    <p className="text-xs text-green-300">{voiceProfile.vocalRange} Range</p>
+                  </div>
+                </div>
+              </Card>
+            )}
+            
             <div className="grid lg:grid-cols-3 gap-6">
               {/* Lyrics */}
               <Card className="p-6 bg-black/40 backdrop-blur-xl border-blue-500/30 shadow-2xl shadow-blue-500/20">
@@ -924,37 +1021,52 @@ const ProDashboard = () => {
               <Card className="p-6 bg-black/40 backdrop-blur-xl border-blue-500/30 shadow-2xl shadow-blue-500/20">
                 <h3 className="text-xl font-semibold text-blue-200 mb-4">
                   Melody Guide 
-                  <Badge className="ml-2 bg-blue-600 text-white">Enhanced</Badge>
+                  <Badge className="ml-2 bg-green-600 text-white">{voiceProfile ? 'Voice Matched' : 'Enhanced'}</Badge>
                 </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-blue-300">Vocal Range:</span>
-                    <span className="font-medium text-blue-200">Medium (C4-G5)</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-blue-300">Key:</span>
-                    <span className="font-medium text-blue-200">C Major</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-blue-300">Tempo:</span>
-                    <span className="font-medium text-blue-200">120 BPM</span>
-                  </div>
-                  <div className="pt-2 border-t border-blue-500/30">
-                    <p className="text-blue-300 mb-2">Hook Melody:</p>
-                    <div className="font-mono text-xs bg-black/40 p-2 rounded border border-blue-500/30 text-blue-200">
-                      C - D - E - G | F - E - D - C
+                
+                <div className="space-y-4">
+                  {/* Voice Optimization Details */}
+                  <div className="space-y-2 text-sm border-b border-blue-500/20 pb-3">
+                    <div className="flex justify-between">
+                      <span className="text-blue-300">Vocal Range:</span>
+                      <span className="font-medium text-blue-200">
+                        {voiceProfile ? `${voiceProfile.vocalRange} (${voiceProfile.rangeDetail})` : "Medium (C4-G5)"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-blue-300">Optimal Key:</span>
+                      <span className="font-medium text-blue-200">
+                        {voiceProfile ? voiceProfile.optimalKeys[0] : "C Major"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-blue-300">BPM Range:</span>
+                      <span className="font-medium text-blue-200">
+                        {voiceProfile ? `${voiceProfile.preferredTempo[0]}-${voiceProfile.preferredTempo[1]}` : "120"} BPM
+                      </span>
                     </div>
                   </div>
-                  
-                  <div className="space-y-2 pt-2">
-                    <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-                      <Settings className="w-3 h-3 mr-2" />
-                      Change Key
-                    </Button>
-                    <Button size="sm" variant="outline" className="w-full border-blue-400/50 text-blue-200 hover:bg-blue-600/20">
-                      <Volume2 className="w-3 h-3 mr-2" />
-                      Voice Match
-                    </Button>
+
+                  {/* Tonic Solfa Notation */}
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-blue-200 text-base">Tonic Solfa:</h4>
+                    
+                    <div className="bg-black/30 rounded p-3 border border-blue-500/20">
+                      <p className="text-blue-300 text-xs mb-2 font-medium">VERSE:</p>
+                      <p className="font-mono text-blue-200 text-sm">d - r - m - f | s - f - m - d |</p>
+                      <p className="font-mono text-blue-200 text-sm">m - r - d - r | m - f - s - s |</p>
+                    </div>
+                    
+                    <div className="bg-black/30 rounded p-3 border border-blue-500/20">
+                      <p className="text-blue-300 text-xs mb-2 font-medium">CHORUS:</p>
+                      <p className="font-mono text-blue-200 text-sm">s - l - s - f | m - r - d - d |</p>
+                      <p className="font-mono text-blue-200 text-sm">f - s - l - t | d' - s - f - m |</p>
+                    </div>
+                    
+                    <div className="bg-black/30 rounded p-3 border border-blue-500/20">
+                      <p className="text-blue-300 text-xs mb-2 font-medium">HOOK MELODY:</p>
+                      <p className="font-mono text-blue-200 text-sm">m - s - f - d | r - m - d - s, |</p>
+                    </div>
                   </div>
                 </div>
               </Card>
