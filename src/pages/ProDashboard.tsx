@@ -97,56 +97,55 @@ const ProDashboard = () => {
     "Adekunle Gold", "Falz", "Vector", "MI Abaga", "Ice Prince", "Brymo"
   ];
 
-  // BPM range options for dropdown
-  const bpmRangeOptions = [
-    { value: '70-90', label: 'Hip-Hop/Trap: 70-90 BPM', description: 'Perfect for rap flows and heavy beats' },
-    { value: '90-120', label: 'Pop/R&B: 90-120 BPM', description: 'Great for catchy melodies and smooth vocals' },
-    { value: '100-120', label: 'Afrobeats: 100-120 BPM', description: 'Ideal for danceable African rhythms' },
-    { value: '120-140', label: 'House/EDM: 120-140 BPM', description: 'High energy for dancefloor hits' },
-    { value: 'custom', label: 'Custom Tempo', description: 'Set your own unique tempo' }
-  ];
-
-  // Genre to BPM recommendations with detailed tooltips
+  // Genre to BPM recommendations with detailed tooltips (keys match dropdown values exactly)
   const genreBPMRecommendations = {
-    'Afrobeats': { 
+    'afrobeats': { 
       recommended: '100-120', 
       tooltip: '🎵 Afrobeats typically uses 100-120 BPM for that perfect danceable groove. This tempo allows for complex polyrhythms while keeping the energy high!' 
     },
-    'Hip-Hop': { 
-      recommended: '70-90', 
-      tooltip: '🎤 Hip-Hop works best at 70-90 BPM - slow enough for clear lyrical delivery but with enough punch for head-nodding beats.' 
-    },
-    'Trap': { 
-      recommended: '70-90', 
-      tooltip: '🔥 Trap music shines at 70-90 BPM with heavy 808s and snappy hi-hats. The slower tempo creates space for signature trap elements.' 
-    },
-    'Pop': { 
+    'pop': { 
       recommended: '90-120', 
       tooltip: '✨ Pop music at 90-120 BPM hits the sweet spot - upbeat enough to be catchy but comfortable for singing along.' 
     },
-    'R&B': { 
+    'hiphop': { 
+      recommended: '70-90', 
+      tooltip: '🎤 Hip-Hop works best at 70-90 BPM - slow enough for clear lyrical delivery but with enough punch for head-nodding beats.' 
+    },
+    'rnb': { 
       recommended: '90-120', 
-      tooltip: '💫 R&B flows beautifully at 90-120 BPM, giving space for smooth vocals and soulful melodies to breathe naturally.' 
+      tooltip: '� R&B flows beautifully at 90-120 BPM, giving space for smooth vocals and soulful melodies to breathe naturally.' 
     },
-    'House': { 
-      recommended: '120-140', 
-      tooltip: '🏠 House music lives at 120-140 BPM - the perfect four-on-the-floor tempo for dancefloor energy!' 
+    'gospel': { 
+      recommended: '80-120', 
+      tooltip: '🙏 Gospel music ranges from 80-120 BPM, allowing for both powerful ballads and uplifting praise songs that move hearts and souls.' 
     },
-    'EDM': { 
-      recommended: '120-140', 
-      tooltip: '⚡ EDM needs 120-140 BPM to maintain that high-energy club atmosphere and keep dancers moving!' 
+    'highlife': { 
+      recommended: '100-130', 
+      tooltip: '🎺 Highlife dances at 100-130 BPM with its signature guitar rhythms and brass sections creating that classic West African swing.' 
     },
-    'Dancehall': { 
-      recommended: '90-120', 
-      tooltip: '🌴 Dancehall grooves at 90-120 BPM with that distinctive Caribbean bounce and rhythm.' 
-    },
-    'Amapiano': { 
+    'amapiano': { 
       recommended: '100-120', 
-      tooltip: '🇿🇦 Amapiano flows at 100-120 BPM with deep house influences and jazzy piano chords.' 
+      tooltip: '🇿� Amapiano flows at 100-120 BPM with deep house influences and jazzy piano chords creating that smooth South African groove.' 
     },
-    'Drill': { 
-      recommended: '120-140', 
-      tooltip: '⚔️ Drill music uses 120-140 BPM for that aggressive, high-energy street sound.' 
+    'reggae': { 
+      recommended: '60-90', 
+      tooltip: '🇯🇲 Reggae grooves at a relaxed 60-90 BPM with emphasis on the off-beat, creating that laid-back Caribbean feel that made Bob Marley famous.' 
+    },
+    'dancehall': { 
+      recommended: '90-120', 
+      tooltip: '🌴 Dancehall energizes at 90-120 BPM with that distinctive Caribbean bounce and digital rhythms perfect for party vibes.' 
+    },
+    'folk': { 
+      recommended: '70-100', 
+      tooltip: '🪕 Folk music breathes at 70-100 BPM, perfect for storytelling and acoustic instruments that connect with the heart.' 
+    },
+    'country': { 
+      recommended: '80-120', 
+      tooltip: '🤠 Country music ranges from 80-120 BPM, from slow ballads to boot-stomping barn burners that tell life stories.' 
+    },
+    'jazz': { 
+      recommended: '90-140', 
+      tooltip: '🎷 Jazz swings anywhere from 90-140 BPM depending on the style - from smooth ballads to energetic bebop that showcases musical virtuosity.' 
     }
   };
   
@@ -187,11 +186,6 @@ const ProDashboard = () => {
         setFormData(prev => ({ ...prev, bpm: bpmData.recommended }));
         setBpmSuggestion(bpmData.tooltip);
         setCurrentGenreRecommendation(bpmData.recommended);
-        // Show pro tip as an informative message
-        toast.info(bpmData.tooltip, { 
-          duration: 5000,
-          position: 'top-center'
-        });
       } else {
         // Clear suggestions if genre doesn't have recommendations
         setBpmSuggestion('');
