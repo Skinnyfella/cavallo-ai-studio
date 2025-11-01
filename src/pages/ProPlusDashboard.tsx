@@ -20,6 +20,7 @@ const ProPlusDashboard = () => {
     genre: '',
     mood: '',
     duration: '',
+    bpm: '',
     artistInspiration: '',
     language: '',
     ideas: '',
@@ -96,8 +97,25 @@ const ProPlusDashboard = () => {
     "Phyno", "Olamide", "Flavour", "Tekno", "Mr. Eazi", "Kizz Daniel", "Simi",
     "Adekunle Gold", "Falz", "Vector", "MI Abaga", "Ice Prince", "Brymo"
   ];
+
+  // BPM recommendations by genre
+  const genreBPMMap = {
+    'Afrobeats': { bpm: '110', reason: 'Typical Afrobeats tempo' },
+    'Hip-Hop': { bpm: '80', reason: 'Classic Hip-Hop tempo' },
+    'Trap': { bpm: '75', reason: 'Modern Trap tempo' },
+    'Pop': { bpm: '120', reason: 'Standard Pop tempo' },
+    'R&B': { bpm: '95', reason: 'Smooth R&B tempo' },
+    'House': { bpm: '128', reason: 'Club-ready House tempo' },
+    'EDM': { bpm: '130', reason: 'High-energy EDM tempo' },
+    'Dancehall': { bpm: '90', reason: 'Caribbean Dancehall tempo' },
+    'Amapiano': { bpm: '112', reason: 'South African Amapiano tempo' },
+    'Drill': { bpm: '140', reason: 'Aggressive Drill tempo' },
+    'Reggae': { bpm: '75', reason: 'Laid-back Reggae tempo' },
+    'Gospel': { bpm: '100', reason: 'Uplifting Gospel tempo' }
+  };
   
   const [isGenerating, setIsGenerating] = useState(false);
+  const [bpmSuggestion, setBpmSuggestion] = useState<string>('');
   const [beatSettings, setBeatSettings] = useState({
     tempo: [120],
     instruments: ['drums', 'bass'],
@@ -112,6 +130,16 @@ const ProPlusDashboard = () => {
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
+    // Handle genre selection - auto-suggest BPM
+    if (field === 'genre') {
+      const bpmData = genreBPMMap[value as keyof typeof genreBPMMap];
+      if (bpmData) {
+        setFormData(prev => ({ ...prev, bpm: bpmData.bpm }));
+        setBpmSuggestion(bpmData.reason);
+        toast.success(`${bpmData.bpm} BPM suggested - ${bpmData.reason}`);
+      }
+    }
+    
     // Handle artist inspiration search
     if (field === 'artistInspiration') {
       if (value.length > 0) {
@@ -123,6 +151,11 @@ const ProPlusDashboard = () => {
       } else {
         setShowArtistSuggestions(false);
       }
+    }
+    
+    // Clear BPM suggestion when manually editing BPM
+    if (field === 'bpm') {
+      setBpmSuggestion('');
     }
   };
 

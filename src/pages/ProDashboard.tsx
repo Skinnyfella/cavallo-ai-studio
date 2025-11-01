@@ -20,6 +20,7 @@ const ProDashboard = () => {
     genre: '',
     mood: '',
     duration: '',
+    bpm: '',
     artistInspiration: '',
     language: '',
     ideas: '',
@@ -60,6 +61,10 @@ const ProDashboard = () => {
     confidence: number;
   } | null>(null);
   
+  // BPM suggestion state
+  const [bpmSuggestion, setBpmSuggestion] = useState<string>('');
+  const [currentGenreRecommendation, setCurrentGenreRecommendation] = useState<string>('');
+  
   // Melody preview state
   const [isPreviewingMelody, setIsPreviewingMelody] = useState(false);
   const [melodyPreviewSample, setMelodyPreviewSample] = useState<string>('');
@@ -91,6 +96,59 @@ const ProDashboard = () => {
     "Phyno", "Olamide", "Flavour", "Tekno", "Mr. Eazi", "Kizz Daniel", "Simi",
     "Adekunle Gold", "Falz", "Vector", "MI Abaga", "Ice Prince", "Brymo"
   ];
+
+  // BPM range options for dropdown
+  const bpmRangeOptions = [
+    { value: '70-90', label: 'Hip-Hop/Trap: 70-90 BPM', description: 'Perfect for rap flows and heavy beats' },
+    { value: '90-120', label: 'Pop/R&B: 90-120 BPM', description: 'Great for catchy melodies and smooth vocals' },
+    { value: '100-120', label: 'Afrobeats: 100-120 BPM', description: 'Ideal for danceable African rhythms' },
+    { value: '120-140', label: 'House/EDM: 120-140 BPM', description: 'High energy for dancefloor hits' },
+    { value: 'custom', label: 'Custom Tempo', description: 'Set your own unique tempo' }
+  ];
+
+  // Genre to BPM recommendations with detailed tooltips
+  const genreBPMRecommendations = {
+    'Afrobeats': { 
+      recommended: '100-120', 
+      tooltip: '🎵 Afrobeats typically uses 100-120 BPM for that perfect danceable groove. This tempo allows for complex polyrhythms while keeping the energy high!' 
+    },
+    'Hip-Hop': { 
+      recommended: '70-90', 
+      tooltip: '🎤 Hip-Hop works best at 70-90 BPM - slow enough for clear lyrical delivery but with enough punch for head-nodding beats.' 
+    },
+    'Trap': { 
+      recommended: '70-90', 
+      tooltip: '🔥 Trap music shines at 70-90 BPM with heavy 808s and snappy hi-hats. The slower tempo creates space for signature trap elements.' 
+    },
+    'Pop': { 
+      recommended: '90-120', 
+      tooltip: '✨ Pop music at 90-120 BPM hits the sweet spot - upbeat enough to be catchy but comfortable for singing along.' 
+    },
+    'R&B': { 
+      recommended: '90-120', 
+      tooltip: '💫 R&B flows beautifully at 90-120 BPM, giving space for smooth vocals and soulful melodies to breathe naturally.' 
+    },
+    'House': { 
+      recommended: '120-140', 
+      tooltip: '🏠 House music lives at 120-140 BPM - the perfect four-on-the-floor tempo for dancefloor energy!' 
+    },
+    'EDM': { 
+      recommended: '120-140', 
+      tooltip: '⚡ EDM needs 120-140 BPM to maintain that high-energy club atmosphere and keep dancers moving!' 
+    },
+    'Dancehall': { 
+      recommended: '90-120', 
+      tooltip: '🌴 Dancehall grooves at 90-120 BPM with that distinctive Caribbean bounce and rhythm.' 
+    },
+    'Amapiano': { 
+      recommended: '100-120', 
+      tooltip: '🇿🇦 Amapiano flows at 100-120 BPM with deep house influences and jazzy piano chords.' 
+    },
+    'Drill': { 
+      recommended: '120-140', 
+      tooltip: '⚔️ Drill music uses 120-140 BPM for that aggressive, high-energy street sound.' 
+    }
+  };
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -122,6 +180,25 @@ const ProDashboard = () => {
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
+    // Handle genre selection - auto-suggest BPM
+    if (field === 'genre') {
+      const bpmData = genreBPMRecommendations[value as keyof typeof genreBPMRecommendations];
+      if (bpmData) {
+        setFormData(prev => ({ ...prev, bpm: bpmData.recommended }));
+        setBpmSuggestion(bpmData.tooltip);
+        setCurrentGenreRecommendation(bpmData.recommended);
+        // Show pro tip as an informative message
+        toast.info(bpmData.tooltip, { 
+          duration: 5000,
+          position: 'top-center'
+        });
+      } else {
+        // Clear suggestions if genre doesn't have recommendations
+        setBpmSuggestion('');
+        setCurrentGenreRecommendation('');
+      }
+    }
+    
     // Handle artist inspiration search
     if (field === 'artistInspiration') {
       if (value.length > 0) {
@@ -132,6 +209,20 @@ const ProDashboard = () => {
         setShowArtistSuggestions(filtered.length > 0);
       } else {
         setShowArtistSuggestions(false);
+      }
+    }
+    
+    // Handle BPM selection - show recommendation status
+    if (field === 'bpm' && formData.genre) {
+      const bpmData = genreBPMRecommendations[formData.genre as keyof typeof genreBPMRecommendations];
+      if (bpmData) {
+        if (value === bpmData.recommended) {
+          // User selected the recommended BPM - show the tooltip
+          setBpmSuggestion(bpmData.tooltip);
+        } else {
+          // User selected a different BPM - show alternative message
+          setBpmSuggestion(`You chose ${value} BPM instead of the recommended ${bpmData.recommended} BPM for ${formData.genre}. Great for adding your unique touch!`);
+        }
       }
     }
   };
@@ -291,6 +382,16 @@ const ProDashboard = () => {
     if (!formData.title || !formData.genre || !formData.mood || !formData.duration || !formData.artistInspiration || !formData.language) {
       toast.error("Please fill in all required fields.");
       return;
+    }
+
+    // Auto-suggest BPM if not provided
+    if (!formData.bpm) {
+      const bpmData = genreBPMRecommendations[formData.genre as keyof typeof genreBPMRecommendations];
+      if (bpmData) {
+        setFormData(prev => ({ ...prev, bpm: bpmData.recommended }));
+        setBpmSuggestion(bpmData.tooltip);
+        toast.info(`BPM auto-set to ${bpmData.recommended} (${bpmData.tooltip})`);
+      }
     }
 
     // Check for primary voice and navigate accordingly
@@ -534,7 +635,47 @@ const ProDashboard = () => {
                           </SelectContent>
                         </Select>
                       </div>
+                    </div>
 
+                    {/* BPM Field - Full Width */}
+                    <div>
+                      <label className="block text-sm font-medium text-blue-200 mb-2">
+                        BPM (Beats Per Minute)
+                      </label>
+                      <Select 
+                        value={formData.bpm} 
+                        onValueChange={(value) => handleInputChange('bpm', value)}
+                      >
+                        <SelectTrigger className="bg-black/20 border-blue-400/50 text-white">
+                          <SelectValue placeholder="Select BPM range" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-black border-blue-500">
+                          <SelectItem value="70-90">Hip-Hop/Trap: 70-90 BPM</SelectItem>
+                          <SelectItem value="90-120">Pop/R&B: 90-120 BPM</SelectItem>
+                          <SelectItem value="100-120">Afrobeats: 100-120 BPM</SelectItem>
+                          <SelectItem value="120-140">House/EDM: 120-140 BPM</SelectItem>
+                          <SelectItem value="140-160">Drum & Bass: 140-160 BPM</SelectItem>
+                          <SelectItem value="160-180">Hardcore/Gabber: 160-180 BPM</SelectItem>
+                          <SelectItem value="60-80">Ballad/Slow: 60-80 BPM</SelectItem>
+                          <SelectItem value="80-100">Mid-tempo: 80-100 BPM</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {(bpmSuggestion || formData.genre) && (
+                        <div className="mt-2 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                          <p className="text-xs text-blue-300 flex items-center gap-2">
+                            <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                            <span className="font-medium text-blue-200">Pro Tip:</span>
+                            {bpmSuggestion || (formData.genre ? (() => {
+                              const bpmData = genreBPMRecommendations[formData.genre as keyof typeof genreBPMRecommendations];
+                              return bpmData ? bpmData.tooltip : `Selected ${formData.genre} - Choose the BPM range that matches your creative vision!`;
+                            })() : "Select a genre above to get BPM recommendations!")}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Duration and Language Row */}
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-blue-200 mb-2">
                           Language *
