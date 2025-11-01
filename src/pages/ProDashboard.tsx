@@ -70,6 +70,11 @@ const ProDashboard = () => {
   const [melodyPreviewSample, setMelodyPreviewSample] = useState<string>('');
   const [isPlayingPreview, setIsPlayingPreview] = useState(false);
   
+  // AI Singer state
+  const [isPlayingAISinger, setIsPlayingAISinger] = useState(false);
+  const [aiSingerProgress, setAiSingerProgress] = useState(0);
+  const [aiSingerLyrics, setAiSingerLyrics] = useState<string>('');
+  
   // Available musical keys
   const musicalKeys = [
     'C Major', 'C# Major', 'D Major', 'D# Major', 'E Major', 
@@ -328,6 +333,51 @@ const ProDashboard = () => {
       toast.error("Preview generation failed. Please try again.");
     } finally {
       setIsPreviewingMelody(false);
+    }
+  };
+
+  // AI Singer function
+  const handlePlayAISinger = async () => {
+    if (!hasPrimaryVoice || !primaryVoice) {
+      toast.error("Please upload your primary voice first");
+      setShowVoiceUploadModal(true);
+      return;
+    }
+
+    if (!formData.title || !formData.genre) {
+      toast.error("Please complete song creation first");
+      return;
+    }
+
+    setIsPlayingAISinger(true);
+    setAiSingerProgress(0);
+    
+    try {
+      // Generate AI lyrics based on user inputs
+      const moodText = formData.mood ? ` ${formData.mood}` : '';
+      const inspirationText = formData.artistInspiration ? ` inspired by ${formData.artistInspiration}` : '';
+      const generatedLyrics = `"${formData.title}" - A${moodText} ${formData.genre} song${inspirationText}`;
+      setAiSingerLyrics(generatedLyrics);
+      
+      toast.success(`🎵 Playing ${generatedLyrics}`);
+      
+      // Simulate realistic playback with progress
+      const progressInterval = setInterval(() => {
+        setAiSingerProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(progressInterval);
+            setIsPlayingAISinger(false);
+            toast.success("🎤 AI Singer performance complete! Your voice sounds amazing!");
+            return 100;
+          }
+          return prev + 1.25; // 1.25% every 100ms = 8 seconds total
+        });
+      }, 100);
+      
+    } catch (error) {
+      toast.error("AI Singer playback failed. Please try again.");
+      setIsPlayingAISinger(false);
+      setAiSingerProgress(0);
     }
   };
 
@@ -629,6 +679,23 @@ const ProDashboard = () => {
                           </SelectContent>
                         </Select>
                       </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-blue-200 mb-2">
+                          Language *
+                        </label>
+                        <Select onValueChange={(value) => handleInputChange('language', value)}>
+                          <SelectTrigger className="bg-black/20 border-blue-400/50 text-white">
+                            <SelectValue placeholder="Select language" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-black border-blue-500">
+                            <SelectItem value="english">English</SelectItem>
+                            <SelectItem value="pidgin">Pidgin</SelectItem>
+                            <SelectItem value="mix">Mix of Both</SelectItem>
+                            <SelectItem value="other" disabled>Other languages (coming soon)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     {/* BPM Field - Full Width */}
@@ -668,25 +735,7 @@ const ProDashboard = () => {
                       )}
                     </div>
 
-                    {/* Duration and Language Row */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-blue-200 mb-2">
-                          Language *
-                        </label>
-                        <Select onValueChange={(value) => handleInputChange('language', value)}>
-                          <SelectTrigger className="bg-black/20 border-blue-400/50 text-white">
-                            <SelectValue placeholder="Select language" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-black border-blue-500">
-                            <SelectItem value="english">English</SelectItem>
-                            <SelectItem value="pidgin">Pidgin</SelectItem>
-                            <SelectItem value="mix">Mix of Both</SelectItem>
-                            <SelectItem value="other" disabled>Other languages (coming soon)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+
 
                     {/* Artist Inspiration - Full Width */}
                     <div className="relative">
@@ -1215,21 +1264,76 @@ const ProDashboard = () => {
                 
                 <div className="space-y-4">
                   <div className="bg-gradient-to-r from-blue-900/30 to-cyan-900/30 rounded-lg p-4 border border-blue-500/30 text-center">
-                    <Volume2 className="w-12 h-12 text-blue-400 mx-auto mb-2" />
-                    <p className="text-blue-200 font-medium">AI Singer Ready!</p>
-                    <p className="text-sm text-blue-300">Using your voice style</p>
+                    <Volume2 className={`w-12 h-12 mx-auto mb-2 ${isPlayingAISinger ? 'text-green-400 animate-bounce' : 'text-blue-400'}`} />
+                    <p className="text-blue-200 font-medium">
+                      {isPlayingAISinger ? 'AI Singer Performing!' : 'AI Singer Ready!'}
+                    </p>
+                    <p className="text-sm text-blue-300">
+                      {hasPrimaryVoice && primaryVoice 
+                        ? `Using ${primaryVoice.name} voice style` 
+                        : 'Upload voice for personalized singing'
+                      }
+                    </p>
+                    {formData.title && !isPlayingAISinger && (
+                      <p className="text-xs text-cyan-300 mt-1">
+                        Ready to perform: "{formData.title}"
+                      </p>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
-                    <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white">
-                      <Play className="w-4 h-4 mr-2" />
-                      Play AI Singer Version
+                    <Button 
+                      onClick={handlePlayAISinger}
+                      disabled={isPlayingAISinger}
+                      className={`w-full ${
+                        isPlayingAISinger 
+                          ? 'bg-green-600 animate-pulse' 
+                          : 'bg-gradient-to-r from-blue-500 to-cyan-500'
+                      } text-white`}
+                    >
+                      {isPlayingAISinger ? (
+                        <>
+                          <Volume2 className="w-4 h-4 mr-2" />
+                          Playing "{formData.title}"... {Math.round(aiSingerProgress)}%
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-4 h-4 mr-2" />
+                          Play AI Singer Version
+                        </>
+                      )}
                     </Button>
                     <Button variant="outline" className="w-full border-blue-400/50 text-blue-200 hover:bg-blue-600/20">
                       <Download className="w-4 h-4 mr-2" />
                       Download High Quality
                     </Button>
                   </div>
+
+                  {/* AI Singer Progress Display */}
+                  {isPlayingAISinger && (
+                    <div className="mt-4 p-4 bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/30 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span className="text-green-400 text-sm font-medium">AI Singer Performing</span>
+                        <span className="text-green-300 text-xs ml-auto">{Math.round(aiSingerProgress)}%</span>
+                      </div>
+                      
+                      <div className="mb-2">
+                        <div className="w-full bg-gray-700 rounded-full h-2">
+                          <div 
+                            className="bg-green-400 h-2 rounded-full transition-all duration-300" 
+                            style={{width: `${aiSingerProgress}%`}}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="text-xs text-green-300">
+                        <p>🎤 Singing with {primaryVoice?.name} voice style</p>
+                        <p>🎵 Key: {selectedKey} | BPM: {formData.bpm || 'Auto'}</p>
+                        {aiSingerLyrics && <p className="italic mt-1">"{aiSingerLyrics}"</p>}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="text-xs text-blue-400 pt-2 border-t border-blue-500/30">
                     <p>✅ Pitch corrected</p>
