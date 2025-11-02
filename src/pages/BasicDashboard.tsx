@@ -6,12 +6,61 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Star, User } from 'lucide-react';
+import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Star, User, PenTool, Wand2, Users, Hash, Languages, BookOpen, Lightbulb } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
+const FeatureCard = ({ icon: Icon, title, description }: { icon: any, title: string, description: string }) => (
+  <Card className="p-4 flex items-start space-x-3 hover:bg-accent/10 transition-colors">
+    <Icon className="w-5 h-5 text-primary mt-1" />
+    <div>
+      <h3 className="font-medium">{title}</h3>
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </div>
+  </Card>
+);
+
 const BasicDashboard = () => {
   const navigate = useNavigate();
+  
+  const features = [
+    {
+      icon: PenTool,
+      title: "AI Lyrics Generator",
+      description: "Generate creative and unique lyrics for your songs"
+    },
+    {
+      icon: Music,
+      title: "Hook Melody Generator",
+      description: "Create catchy hook melodies with solfa notation"
+    },
+    {
+      icon: Users,
+      title: "Artist Inspiration",
+      description: "Get inspiration from your favorite artists"
+    },
+    {
+      icon: Hash,
+      title: "Genre & BPM",
+      description: "Get BPM recommendations based on your chosen genre"
+    },
+    {
+      icon: Settings,
+      title: "Custom BPM",
+      description: "Set your own custom BPM for the perfect tempo"
+    },
+    {
+      icon: Languages,
+      title: "Language Selection",
+      description: "Create songs in multiple languages"
+    },
+    {
+      icon: Lightbulb,
+      title: "Idea Box",
+      description: "Organize your song concepts and ideas"
+    }
+  ];
+
   const [formData, setFormData] = useState({
     title: '',
     genre: '',
@@ -59,7 +108,7 @@ const BasicDashboard = () => {
       hookSolfa: string;
     };
   }>(null);
-  const maxGenerations = 3;
+  const maxGenerations = 4; // 4 tokens per generation for basic plan
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -179,39 +228,26 @@ This is our moment, wow`
         {/* Generation Progress */}
         <div className="mt-4">
           <div className="flex justify-between text-sm text-emerald-200 mb-2">
-            <span>Generations Used Today</span>
-            <span>{generationsUsed}/{maxGenerations}</span>
+            <span>Tokens Available</span>
+            <span>{maxGenerations - generationsUsed} of {maxGenerations}</span>
           </div>
           <Progress 
-            value={(generationsUsed / maxGenerations) * 100} 
+            value={((maxGenerations - generationsUsed) / maxGenerations) * 100} 
             className="h-2 bg-emerald-800"
           />
           {generationsUsed >= maxGenerations && (
             <p className="text-sm text-amber-300 mt-2 font-medium">
-              Daily limit reached! Upgrade to Pro for 10 generations/day.
+              All tokens used! Upgrade to Pro for more tokens per day.
             </p>
           )}
         </div>
 
-        {/* Feature Highlights */}
-        <div className="flex flex-wrap gap-3 mt-4">
-          <Badge className="bg-emerald-600/30 text-emerald-200 border-emerald-500/50">
-            <Music className="w-3 h-3 mr-1" />
-            AI-Generated Lyrics
-          </Badge>
-          <Badge className="bg-green-600/30 text-green-200 border-green-500/50">
-            <Download className="w-3 h-3 mr-1" />
-            Demo Downloads
-          </Badge>
-          <Badge className="bg-teal-600/30 text-teal-200 border-teal-500/50">
-            <Star className="w-3 h-3 mr-1" />
-            3 Daily Generations
-          </Badge>
-        </div>
+        {/* Top feature badges removed - features moved into the right-hand "Basic Features" panel */}
       </div>
 
       {/* Main Interface */}
       <div className="max-w-7xl mx-auto">
+
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Creation Form */}
           <div className="lg:col-span-2">
@@ -416,26 +452,77 @@ This is our moment, wow`
               </h3>
               <div className="space-y-4 text-sm">
                 <div className="flex items-start gap-3">
-                  <Music className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <PenTool className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-emerald-200 font-medium">AI Song Generation</p>
-                    <p className="text-emerald-300">Lyrics + melody generated automatically</p>
+                    <p className="text-emerald-200 font-medium">AI Lyrics Generator</p>
+                    <p className="text-emerald-300">Generate creative lyrics and receive a melody guide</p>
                   </div>
                 </div>
+
                 <div className="flex items-start gap-3">
-                  <Download className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                  <Music className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-emerald-200 font-medium">Hook Melody Generator</p>
+                    <p className="text-emerald-300">Create catchy hook melodies with solfa notation</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Users className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-emerald-200 font-medium">Artist Inspiration</p>
+                    <p className="text-emerald-300">Suggestive & searchable artist ideas to shape your sound</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Hash className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-emerald-200 font-medium">Genre → Recommended BPM</p>
+                    <p className="text-emerald-300">Recommended BPM based on your chosen genre</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Settings className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-emerald-200 font-medium">Custom BPM Input</p>
+                    <p className="text-emerald-300">Set a custom BPM for precise tempo control</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Languages className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-emerald-200 font-medium">Language Selection</p>
+                    <p className="text-emerald-300">Create songs in multiple languages</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Lightbulb className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-emerald-200 font-medium">Idea / Concept Box</p>
+                    <p className="text-emerald-300">Save and organize song ideas and concepts</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Download className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-emerald-200 font-medium">Demo Downloads</p>
                     <p className="text-emerald-300">High-quality demo audio files</p>
                   </div>
                 </div>
+
                 <div className="flex items-start gap-3">
-                  <Star className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                  <Wand2 className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-emerald-200 font-medium">Daily Generations</p>
-                    <p className="text-emerald-300">3 song generations per day</p>
+                    <p className="text-emerald-200 font-medium">Token System</p>
+                    <p className="text-emerald-300">4 tokens per generation</p>
                   </div>
                 </div>
+
               </div>
             </Card>
 
