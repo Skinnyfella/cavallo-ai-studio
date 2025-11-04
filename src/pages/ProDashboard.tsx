@@ -783,6 +783,7 @@ const ProDashboard = () => {
                         </>
                       )}
                     </Button>
+       
                   </div>
                 </Card>
               </div>
@@ -917,6 +918,9 @@ const ProDashboard = () => {
                     <Upload className="w-4 h-4 mr-2" />
                     Choose Voice File
                   </Button>
+                  <p className="text-xs text-blue-300 text-center mt-2">
+                    By uploading audio, you confirm you own the rights to this voice and consent to voice model creation for personal or demo purposes.
+                  </p>
                 </div>
               </Card>
 
@@ -1453,6 +1457,9 @@ const ProDashboard = () => {
               <div className="text-xs text-blue-400 text-center">
                 Supported formats: MP3, WAV, M4A, AAC
               </div>
+              <p className="text-xs text-blue-300 text-center">
+                By uploading audio, you confirm you own the rights to this voice and consent to voice model creation for personal or demo purposes.
+              </p>
             </div>
 
             {/* Current Voice Status */}

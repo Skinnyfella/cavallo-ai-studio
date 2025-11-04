@@ -711,6 +711,15 @@ const ProPlusDashboard = () => {
                         <p className="text-purple-300">No daily limits, priority processing</p>
                       </div>
                     </div>
+                    <div className="flex items-center justify-between bg-purple-900/20 p-3 rounded-md border border-purple-500/20">
+                      <div>
+                        <p className="text-purple-200 font-medium">Collaborate with Human Producers (Optional)</p>
+                        <p className="text-xs text-purple-300">Work with experienced producers to refine your track</p>
+                      </div>
+                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-300 text-xs font-semibold border border-yellow-400/20">
+                        Coming Soon
+                      </span>
+                    </div>
                   </div>
                 </Card>
 
@@ -815,10 +824,21 @@ const ProPlusDashboard = () => {
                     </Button>
                   </div>
 
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
+                  
+
+                  <Button className="w-full mt-3 bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
                     <Play className="w-4 h-4 mr-2" />
                     Generate Beat
                   </Button>
+                  {/* Collaborate button (Coming Soon) - placed like Change Key / Generate Beat */}
+                  <Button
+                    className="w-full mt-3 bg-purple-800/20 border border-purple-500/20 text-purple-200"
+                    disabled
+                    title="Coming Soon"
+                  >
+                    Collaborate with Human Producers — Coming Soon
+                  </Button>
+                  
                 </div>
               </Card>
 

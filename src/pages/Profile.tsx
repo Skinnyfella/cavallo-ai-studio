@@ -522,6 +522,9 @@ const Profile = () => {
                         <Upload className="h-4 w-4 mr-2" />
                         Upload Voice Sample
                       </Button>
+                      <p className="text-xs text-muted-foreground mt-3">
+                        By uploading audio, you confirm you own the rights to this voice and consent to voice model creation for personal or demo purposes.
+                      </p>
                     </div>
                     
                     <div className="space-y-3">
