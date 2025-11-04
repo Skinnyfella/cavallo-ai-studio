@@ -1,73 +1,83 @@
-# Welcome to your Lovable project
+## 🎶 AI Music Studio — Songwriter & Producer Platform
 
-## Project info
+Your all-in-one **AI-powered music creation suite** — where artists, producers, and songwriters can **create full songs, collaborate, and bring their voice to life with AI**.
 
-**URL**: https://lovable.dev/projects/a8931755-9f44-4237-95a2-41d2f0093acc
+---
 
-## How can I edit this code?
+## 🧠 About the Project
 
-There are several ways of editing your application.
+This project was built to close the gap between **AI songwriting** and **real music creation** — allowing users to go from idea → lyrics → melody → AI vocals, all inside one studio.
 
-**Use Lovable**
+The platform is designed around **three membership tiers (Basic, Pro, and Pro+)**, each unlocking deeper creative control, AI tools, and collaboration features.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a8931755-9f44-4237-95a2-41d2f0093acc) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## ⚡️ Key Features
 
-**Use your preferred IDE**
+### 🟢 **BASIC**
+For beginners exploring AI songwriting.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+**Features:**
+- AI Lyric Generation  
+- Mood & genre selection  
+- Song duration control  
+- Artist inspiration & rhyme scheme  
+- Auto BPM suggestion  
+- Export lyrics as text  
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+### 🟣 **PRO**
+For creators who want control over melody and voice.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+**Goal:** Move from text-based to AI-assisted singing.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+**Features:**
+- Everything in Basic  
+- **AI Singer** (your tone/style)  
+- **Pitch Guide + Visual Correction**  
+- **Melody Editor (timing, notes, scales)**  
+- **Primary Voice Setup** (upload/record once)  
+- Reuse your voice across generations  
+- **BPM Customization**  
+- **High-quality export (320kbps / WAV)** 
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### 👑 **PRO+ PLAN**
+For pros and studios — the “power tier.”  
+**Goal:** Full creative control, studio tools, and AI collaboration.
+
+**Features:**
+- Everything in Pro  
+- **Real-time Collaboration** (multi-user song projects)  
+- **Collaboration Request Form** (connect with songwriters/producers via EmailJS)  
+- **Studio Stems Export** (vocals, drums, bass)  
+- **AI Songwriter + AI Producer integration**  
+- **Voice Library Access** (try AI-trained voices from other creators)  
+- **Advanced tempo, key, and pitch control** 
+
+## Quick start (dev)
+
+Requirements
+
+- Node.js 18+ (use nvm to manage versions)
+- pnpm or npm (pnpm is recommended because this repo contains a pnpm lockfile)
+
+Install and run the dev server
+
+```bash
+# install dependencies (using pnpm recommended)
+pnpm install
+
+# start the dev server
+pnpm dev
+
+# build for production
+pnpm build
+
+# preview the production build
+pnpm preview
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/a8931755-9f44-4237-95a2-41d2f0093acc) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+If you prefer npm, replace `pnpm` with `npm` (or `npm ci` for CI environments).
