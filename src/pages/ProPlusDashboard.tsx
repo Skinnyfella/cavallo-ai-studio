@@ -483,7 +483,7 @@ const ProPlusDashboard = () => {
               Beat Maker
             </TabsTrigger>
             <TabsTrigger value="collab" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              Request a Songwriter or Producer
+              Request a Songwriter
             </TabsTrigger>
             <TabsTrigger value="results" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
               Studio Export
@@ -924,73 +924,89 @@ const ProPlusDashboard = () => {
           <TabsContent value="collab">
             <div className="grid lg:grid-cols-1 gap-6">
               <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-1">Request a Songwriter or Producer</h3>
+                <h3 className="text-xl font-semibold text-purple-200 mb-1">Request a Songwriter</h3>
                 <p className="text-sm text-purple-300 mb-4">Tell us what kind of music you want — we'll handle the rest.</p>
 
-                <form onSubmit={handleRequestSubmit} className="space-y-4">
+                <form onSubmit={handleRequestSubmit} className="space-y-6">
+                  {/* Song title first, full width */}
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Song Title</label>
+                    <Input value={requestForm.songTitle} onChange={(e) => handleRequestChange('songTitle', e.target.value)} placeholder="Enter your song title" className="bg-black/20 border-purple-400/50 text-white" />
+                  </div>
+
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-purple-200">Full Name *</label>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Full Name *</label>
                       <Input value={requestForm.fullName} onChange={(e) => handleRequestChange('fullName', e.target.value)} placeholder="Enter your full name" className="bg-black/20 border-purple-400/50 text-white" />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-purple-200">Email Address *</label>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Email Address *</label>
                       <Input value={requestForm.email} onChange={(e) => handleRequestChange('email', e.target.value)} placeholder="Enter your email so we can contact you" className="bg-black/20 border-purple-400/50 text-white" />
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200">Song Title</label>
-                    <Input value={requestForm.songTitle} onChange={(e) => handleRequestChange('songTitle', e.target.value)} placeholder="If you already have one, add it here" className="bg-black/20 border-purple-400/50 text-white" />
-                  </div>
-
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-purple-200">Genre</label>
-                      <select value={requestForm.genre} onChange={(e) => handleRequestChange('genre', e.target.value)} className="w-full bg-black/20 border border-purple-400/50 text-white p-2 rounded">
-                        <option>Afrobeats</option>
-                        <option>R&B / Soul</option>
-                        <option>Pop</option>
-                        <option>Amapiano</option>
-                        <option>Hip-Hop / Rap</option>
-                        <option>Gospel</option>
-                        <option>Dancehall</option>
-                        <option>Lo-fi</option>
-                        <option>Drill</option>
-                        <option>Other</option>
-                      </select>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Genre</label>
+                      <Select value={requestForm.genre} onValueChange={(value) => handleRequestChange('genre', value)}>
+                        <SelectTrigger className="bg-black/20 border border-purple-400/50 text-white">
+                          <SelectValue placeholder="Select genre" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-black border-purple-500/30">
+                          <SelectItem value="Afrobeats">Afrobeats</SelectItem>
+                          <SelectItem value="R&B / Soul">R&B / Soul</SelectItem>
+                          <SelectItem value="Pop">Pop</SelectItem>
+                          <SelectItem value="Amapiano">Amapiano</SelectItem>
+                          <SelectItem value="Hip-Hop / Rap">Hip-Hop / Rap</SelectItem>
+                          <SelectItem value="Gospel">Gospel</SelectItem>
+                          <SelectItem value="Dancehall">Dancehall</SelectItem>
+                          <SelectItem value="Lo-fi">Lo-fi</SelectItem>
+                          <SelectItem value="Drill">Drill</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-purple-200">Song Type</label>
-                      <div className="space-y-2 mt-2 text-sm text-purple-200">
-                        {['Full Song (lyrics + beat + vocals)','Lyrics Only','Beat Only','Vocals Only','Mix & Master'].map((opt) => (
-                          <label key={opt} className="flex items-center gap-2">
-                            <input type="radio" name="songType" value={opt} checked={requestForm.songType === opt} onChange={() => handleRequestChange('songType', opt)} className="accent-purple-500" />
-                            <span>{opt}</span>
-                          </label>
-                        ))}
-                      </div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Mood</label>
+                      <Select value={requestForm.mood} onValueChange={(value) => handleRequestChange('mood', value)}>
+                        <SelectTrigger className="bg-black/20 border border-purple-400/50 text-white">
+                          <SelectValue placeholder="Select mood" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-black border-purple-500/30">
+                          <SelectItem value="Happy">Happy</SelectItem>
+                          <SelectItem value="Sad">Sad</SelectItem>
+                          <SelectItem value="Romantic">Romantic</SelectItem>
+                          <SelectItem value="Energetic">Energetic</SelectItem>
+                          <SelectItem value="Motivational">Motivational</SelectItem>
+                          <SelectItem value="Chill / Calm">Chill / Calm</SelectItem>
+                          <SelectItem value="Heartbreak">Heartbreak</SelectItem>
+                          <SelectItem value="Party Vibes">Party Vibes</SelectItem>
+                          <SelectItem value="Spiritual">Spiritual</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-purple-200">Mood</label>
-                    <select value={requestForm.mood} onChange={(e) => handleRequestChange('mood', e.target.value)} className="w-full bg-black/20 border border-purple-400/50 text-white p-2 rounded">
-                      <option>Happy</option>
-                      <option>Sad</option>
-                      <option>Romantic</option>
-                      <option>Energetic</option>
-                      <option>Motivational</option>
-                      <option>Chill / Calm</option>
-                      <option>Heartbreak</option>
-                      <option>Party Vibes</option>
-                      <option>Spiritual</option>
-                    </select>
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Song Type</label>
+                    <Select value={requestForm.songType} onValueChange={(value) => handleRequestChange('songType', value)}>
+                      <SelectTrigger className="bg-black/20 border border-purple-400/50 text-white">
+                        <SelectValue placeholder="Select song type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black border-purple-500/30">
+                        <SelectItem value="Full Song (lyrics + beat + vocals)" disabled>Full Song (lyrics + beat + vocals) — Coming Soon</SelectItem>
+                        <SelectItem value="Lyrics Only">Lyrics Only</SelectItem>
+                        <SelectItem value="Beat Only" disabled>Beat Only — Coming Soon</SelectItem>
+                        <SelectItem value="Vocals Only">Vocals Only</SelectItem>
+                        <SelectItem value="Mix & Master" disabled>Mix & Master — Coming Soon</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-purple-400 mt-2">Options marked "Coming Soon" are not available yet.</p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-purple-200">Description</label>
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Description</label>
                     <Textarea value={requestForm.description} onChange={(e) => handleRequestChange('description', e.target.value)} placeholder="Describe what you want for the song (theme, story, inspirations, tempo, etc.)" className="bg-black/20 border-purple-400/50 text-white" rows={5} />
                   </div>
 
