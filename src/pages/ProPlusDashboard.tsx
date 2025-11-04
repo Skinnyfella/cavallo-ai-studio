@@ -377,10 +377,9 @@ const ProPlusDashboard = () => {
           
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="text-sm text-purple-200 font-medium">Generations</p>
+            
               <div className="flex items-center gap-2">
-                <Infinity className="w-5 h-5 text-purple-300" />
-                <p className="text-2xl font-bold text-purple-100">Unlimited</p>
+              
               </div>
             </div>
             <Button
@@ -425,7 +424,7 @@ const ProPlusDashboard = () => {
       {/* Main Interface */}
       <div className="max-w-7xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-black/40 backdrop-blur border border-purple-500/30">
+    <TabsList className="grid w-full grid-cols-4 bg-black/40 backdrop-blur border border-purple-500/30">
             <TabsTrigger value="create" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
               Songwriting
             </TabsTrigger>
@@ -434,9 +433,6 @@ const ProPlusDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="collab" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
               Collaboration
-            </TabsTrigger>
-            <TabsTrigger value="voice" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              Voice Clone
             </TabsTrigger>
             <TabsTrigger value="results" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
               Studio Export
@@ -697,29 +693,12 @@ const ProPlusDashboard = () => {
                         <p className="text-purple-300">Export individual tracks (vocals, drums, bass)</p>
                       </div>
                     </div>
+                    
                     <div className="flex items-start gap-3">
-                      <Mic className="w-4 h-4 text-pink-400 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-purple-200 font-medium">Voice Cloning</p>
-                        <p className="text-purple-300">Advanced AI voice synthesis</p>
-                      </div>
+                    
+                      
                     </div>
-                    <div className="flex items-start gap-3">
-                      <Infinity className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-purple-200 font-medium">Unlimited Everything</p>
-                        <p className="text-purple-300">No daily limits, priority processing</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between bg-purple-900/20 p-3 rounded-md border border-purple-500/20">
-                      <div>
-                        <p className="text-purple-200 font-medium">Collaborate with Human Producers (Optional)</p>
-                        <p className="text-xs text-purple-300">Work with experienced producers to refine your track</p>
-                      </div>
-                      <span className="inline-flex items-center px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-300 text-xs font-semibold border border-yellow-400/20">
-                        Coming Soon
-                      </span>
-                    </div>
+                   
                   </div>
                 </Card>
 
@@ -985,40 +964,7 @@ const ProPlusDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* Voice Clone Tab */}
-          <TabsContent value="voice">
-            <Card className="p-8 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-              <h3 className="text-xl font-semibold text-purple-200 mb-6">Advanced Voice Cloning</h3>
-              
-              <div className="grid lg:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div className="bg-purple-900/30 rounded-lg p-6 border border-purple-500/30">
-                    <h4 className="font-semibold text-purple-200 mb-3">🎤 Enhanced Features:</h4>
-                    <ul className="text-sm text-purple-300 space-y-2">
-                      <li>• Multi-emotion voice synthesis</li>
-                      <li>• Harmony layer generation</li>
-                      <li>• Voice aging/transformation</li>
-                      <li>• Multiple language support</li>
-                      <li>• Real-time voice effects</li>
-                    </ul>
-                  </div>
-                  
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
-                    <Crown className="w-4 h-4 mr-2" />
-                    Access Voice Clone Studio
-                  </Button>
-                </div>
-                
-                <div className="bg-black/20 rounded-lg p-6 border border-purple-500/30">
-                  <p className="text-purple-200 text-center mb-4">🚀 Coming Soon</p>
-                  <p className="text-sm text-purple-300 text-center">
-                    Advanced voice cloning features are being fine-tuned. 
-                    Pro+ members get early access when available.
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </TabsContent>
+          {/* Voice Clone tab removed per product decision */}
 
           {/* Results/Export Tab */}
           <TabsContent value="results">
@@ -1124,7 +1070,7 @@ const ProPlusDashboard = () => {
                   <Crown className="w-5 h-5 mr-2" />
                   Ready for your next masterpiece? 
                 </h3>
-                <p className="text-purple-300 mb-4">Unlimited generations • Priority processing • Early access features</p>
+                
                 <div className="flex gap-4 justify-center">
                   <Button onClick={() => setActiveTab('create')} className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
                     Create Another Song
