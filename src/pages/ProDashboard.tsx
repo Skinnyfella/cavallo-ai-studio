@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, Star, User, X } from 'lucide-react';
+import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Infinity, Crown, Layers, Headphones, Star, User, X, Check, Hash } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -552,25 +552,7 @@ const ProDashboard = () => {
           />
         </div>
 
-        {/* Feature Highlights */}
-        <div className="flex flex-wrap gap-3 mt-4">
-          <Badge className="bg-blue-600/30 text-blue-200 border-blue-500/50">
-            <Mic className="w-3 h-3 mr-1" />
-            Voice Upload
-          </Badge>
-          <Badge className="bg-cyan-600/30 text-cyan-200 border-cyan-500/50">
-            <Volume2 className="w-3 h-3 mr-1" />
-            AI Singer
-          </Badge>
-          <Badge className="bg-indigo-600/30 text-indigo-200 border-indigo-500/50">
-            <Settings className="w-3 h-3 mr-1" />
-            Pitch Guide
-          </Badge>
-          <Badge className="bg-blue-600/30 text-blue-200 border-blue-500/50">
-            <Edit3 className="w-3 h-3 mr-1" />
-            Melody Editor
-          </Badge>
-        </div>
+        {/* Pro features summary removed - sidebar contains full Pro features */}
       </div>
 
       {/* Main Interface */}
@@ -797,7 +779,7 @@ const ProDashboard = () => {
                       ) : (
                         <>
                           <Music className="w-5 h-5 mr-3" />
-                          Generate AI Singer Version (1 Token)
+                          Generate AI Singer Version (8 Token)
                         </>
                       )}
                     </Button>
@@ -814,31 +796,58 @@ const ProDashboard = () => {
                   </h3>
                   <div className="space-y-4 text-sm">
                     <div className="flex items-start gap-3">
-                      <Mic className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                      <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-blue-200 font-medium">Voice Upload & AI Singer</p>
-                        <p className="text-blue-300">AI sings with your voice style</p>
+                        <p className="text-blue-200 font-medium">Includes everything in Basic</p>
+                        <p className="text-blue-300">All core generation tools & features</p>
                       </div>
                     </div>
+
+                    <div className="flex items-start gap-3">
+                      <Mic className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-blue-200 font-medium">AI Singer</p>
+                        <p className="text-blue-300">Creates vocals using your voice tone & style</p>
+                      </div>
+                    </div>
+
                     <div className="flex items-start gap-3">
                       <Settings className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-blue-200 font-medium">Pitch Correction</p>
-                        <p className="text-blue-300">Visual pitch guide & auto-correction</p>
+                        <p className="text-blue-200 font-medium">Pitch Guide + Auto Correction</p>
+                        <p className="text-blue-300">Visual pitch guide & automatic tuning</p>
                       </div>
                     </div>
+
                     <div className="flex items-start gap-3">
                       <Edit3 className="w-4 h-4 text-indigo-400 mt-0.5 flex-shrink-0" />
                       <div>
                         <p className="text-blue-200 font-medium">Melody Editor</p>
-                        <p className="text-blue-300">Customize and tweak melodies</p>
+                        <p className="text-blue-300">Refine notes, timing and phrasing</p>
                       </div>
                     </div>
+
                     <div className="flex items-start gap-3">
-                      <Volume2 className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                      <Upload className="w-4 h-4 text-blue-300 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-blue-200 font-medium">High-Quality Audio</p>
-                        <p className="text-blue-300">320kbps exports & preview</p>
+                        <p className="text-blue-200 font-medium">Primary Voice Setup</p>
+                        <p className="text-blue-300">Upload or record once and reuse across songs</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <Hash className="w-4 h-4 text-cyan-300 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-blue-200 font-medium">BPM Control</p>
+                        <p className="text-blue-300">Smart genre suggestions & manual BPM control</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <Download className="w-4 h-4 text-cyan-300 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-blue-200 font-medium">High-Quality Exports</p>
+                        <p className="text-blue-300">320kbps & WAV exports</p>
                       </div>
                     </div>
                   </div>
@@ -854,7 +863,7 @@ const ProDashboard = () => {
                     <p>• AI beat maker & producer tools</p>
                     <p>• Real-time collaboration</p>
                     <p>• Studio stems & WAV exports</p>
-                    <p>• Unlimited generations</p>
+                    <p>• More tokens</p>
                   </div>
                   <Button 
                     onClick={() => navigate('/plans')}

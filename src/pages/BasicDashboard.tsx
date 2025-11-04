@@ -478,18 +478,12 @@ This is our moment, wow`
                 <div className="flex items-start gap-3">
                   <Hash className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-emerald-200 font-medium">Genre → Recommended BPM</p>
-                    <p className="text-emerald-300">Recommended BPM based on your chosen genre</p>
+                    <p className="text-emerald-200 font-medium">Genre selection </p>
+                    <p className="text-emerald-300">Select a style. Get lyrics and a melody guide made just for it.</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <Settings className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-emerald-200 font-medium">Custom BPM Input</p>
-                    <p className="text-emerald-300">Set a custom BPM for precise tempo control</p>
-                  </div>
-                </div>
+                
 
                 <div className="flex items-start gap-3">
                   <Languages className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
@@ -534,7 +528,6 @@ This is our moment, wow`
               </h4>
               <div className="text-xs text-blue-300 space-y-1 mb-3">
                 <p>• Upload your voice for AI singing</p>
-                <p>• 10 generations per day</p>
                 <p>• Pitch correction & guides</p>
                 <p>• High-quality audio exports</p>
               </div>
