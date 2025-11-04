@@ -127,6 +127,57 @@ const ProPlusDashboard = () => {
     { name: 'Mike T.', role: 'Mixer', status: 'away' }
   ]);
 
+  // Request a songwriter/producer form state
+  const [requestForm, setRequestForm] = useState({
+    fullName: '',
+    email: '',
+    songTitle: '',
+    genre: 'Afrobeats',
+    songType: 'Full Song',
+    mood: 'Happy',
+    description: '',
+    agree: false
+  });
+  const [requestFiles, setRequestFiles] = useState<File | null>(null);
+  const requestFileRef = useRef<HTMLInputElement>(null);
+  const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
+
+  const handleRequestChange = (field: string, value: any) => {
+    setRequestForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setRequestFiles(file);
+  };
+
+  const handleRequestSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!requestForm.fullName.trim() || !requestForm.email.trim()) {
+      toast.error('Please provide your full name and email.');
+      return;
+    }
+    if (!requestForm.agree) {
+      toast.error('You must agree to be contacted about this project.');
+      return;
+    }
+
+    setIsSubmittingRequest(true);
+    try {
+      // Simulate API call
+      await new Promise(res => setTimeout(res, 1000));
+      toast.success('Song request sent! We will contact you via email.');
+      // reset form
+      setRequestForm({ fullName: '', email: '', songTitle: '', genre: 'Afrobeats', songType: 'Full Song', mood: 'Happy', description: '', agree: false });
+      setRequestFiles(null);
+      if (requestFileRef.current) requestFileRef.current.value = '';
+    } catch (err) {
+      toast.error('Failed to send request. Please try again.');
+    } finally {
+      setIsSubmittingRequest(false);
+    }
+  };
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
@@ -432,7 +483,7 @@ const ProPlusDashboard = () => {
               Beat Maker
             </TabsTrigger>
             <TabsTrigger value="collab" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              Collaboration
+              Request a Songwriter or Producer
             </TabsTrigger>
             <TabsTrigger value="results" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
               Studio Export
@@ -869,97 +920,100 @@ const ProPlusDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* Collaboration Tab */}
+          {/* Request a Songwriter or Producer */}
           <TabsContent value="collab">
-            <div className="grid lg:grid-cols-3 gap-6">
-              {/* Active Collaborators */}
+            <div className="grid lg:grid-cols-1 gap-6">
               <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-4">Active Collaborators</h3>
-                
-                <div className="space-y-3">
-                  {collaborators.map((collab, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-black/20 rounded-lg border border-purple-500/20">
-                      <div className={`w-3 h-3 rounded-full ${collab.status === 'online' ? 'bg-green-400' : 'bg-yellow-400'}`} />
-                      <div className="flex-1">
-                        <p className="text-purple-200 font-medium">{collab.name}</p>
-                        <p className="text-xs text-purple-300">{collab.role}</p>
+                <h3 className="text-xl font-semibold text-purple-200 mb-1">Request a Songwriter or Producer</h3>
+                <p className="text-sm text-purple-300 mb-4">Tell us what kind of music you want — we'll handle the rest.</p>
+
+                <form onSubmit={handleRequestSubmit} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200">Full Name *</label>
+                      <Input value={requestForm.fullName} onChange={(e) => handleRequestChange('fullName', e.target.value)} placeholder="Enter your full name" className="bg-black/20 border-purple-400/50 text-white" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200">Email Address *</label>
+                      <Input value={requestForm.email} onChange={(e) => handleRequestChange('email', e.target.value)} placeholder="Enter your email so we can contact you" className="bg-black/20 border-purple-400/50 text-white" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200">Song Title</label>
+                    <Input value={requestForm.songTitle} onChange={(e) => handleRequestChange('songTitle', e.target.value)} placeholder="If you already have one, add it here" className="bg-black/20 border-purple-400/50 text-white" />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200">Genre</label>
+                      <select value={requestForm.genre} onChange={(e) => handleRequestChange('genre', e.target.value)} className="w-full bg-black/20 border border-purple-400/50 text-white p-2 rounded">
+                        <option>Afrobeats</option>
+                        <option>R&B / Soul</option>
+                        <option>Pop</option>
+                        <option>Amapiano</option>
+                        <option>Hip-Hop / Rap</option>
+                        <option>Gospel</option>
+                        <option>Dancehall</option>
+                        <option>Lo-fi</option>
+                        <option>Drill</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200">Song Type</label>
+                      <div className="space-y-2 mt-2 text-sm text-purple-200">
+                        {['Full Song (lyrics + beat + vocals)','Lyrics Only','Beat Only','Vocals Only','Mix & Master'].map((opt) => (
+                          <label key={opt} className="flex items-center gap-2">
+                            <input type="radio" name="songType" value={opt} checked={requestForm.songType === opt} onChange={() => handleRequestChange('songType', opt)} className="accent-purple-500" />
+                            <span>{opt}</span>
+                          </label>
+                        ))}
                       </div>
-                      <Badge variant="outline" className="text-xs border-purple-500/30 text-purple-300">
-                        {collab.status}
-                      </Badge>
                     </div>
-                  ))}
-                  
-                  <Button variant="outline" className="w-full border-purple-400/50 text-purple-200 hover:bg-purple-600/20">
-                    <Users className="w-4 h-4 mr-2" />
-                    Invite Collaborator
-                  </Button>
-                </div>
-              </Card>
+                  </div>
 
-              {/* Real-time Activity */}
-              <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-4">Live Activity</h3>
-                
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-start gap-3 p-2 bg-green-900/20 rounded border border-green-500/30">
-                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0" />
-                    <div>
-                      <p className="text-green-200">Sarah M. is editing verse 2 lyrics</p>
-                      <p className="text-green-300/60 text-xs">2 minutes ago</p>
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200">Mood</label>
+                    <select value={requestForm.mood} onChange={(e) => handleRequestChange('mood', e.target.value)} className="w-full bg-black/20 border border-purple-400/50 text-white p-2 rounded">
+                      <option>Happy</option>
+                      <option>Sad</option>
+                      <option>Romantic</option>
+                      <option>Energetic</option>
+                      <option>Motivational</option>
+                      <option>Chill / Calm</option>
+                      <option>Heartbreak</option>
+                      <option>Party Vibes</option>
+                      <option>Spiritual</option>
+                    </select>
                   </div>
-                  
-                  <div className="flex items-start gap-3 p-2 bg-blue-900/20 rounded border border-blue-500/30">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                    <div>
-                      <p className="text-blue-200">Mike T. adjusted the bass line</p>
-                      <p className="text-blue-300/60 text-xs">5 minutes ago</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3 p-2 bg-purple-900/20 rounded border border-purple-500/30">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0" />
-                    <div>
-                      <p className="text-purple-200">You created a new melody variation</p>
-                      <p className="text-purple-300/60 text-xs">12 minutes ago</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
 
-              {/* Collaboration Tools */}
-              <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-4">Collaboration Tools</h3>
-                
-                <div className="space-y-3">
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                    <Mic className="w-4 h-4 mr-2" />
-                    Voice Chat
-                  </Button>
-                  <Button variant="outline" className="w-full border-purple-400/50 text-purple-200 hover:bg-purple-600/20">
-                    <Edit3 className="w-4 h-4 mr-2" />
-                    Shared Notepad
-                  </Button>
-                  <Button variant="outline" className="w-full border-purple-400/50 text-purple-200 hover:bg-purple-600/20">
-                    <Volume2 className="w-4 h-4 mr-2" />
-                    Live Playback Sync
-                  </Button>
-                  <Button variant="outline" className="w-full border-purple-400/50 text-purple-200 hover:bg-purple-600/20">
-                    <Download className="w-4 h-4 mr-2" />
-                    Export Project
-                  </Button>
-                </div>
-
-                <div className="mt-6 p-4 bg-purple-900/30 rounded-lg border border-purple-500/30">
-                  <h4 className="font-medium text-purple-200 mb-2">Project Status:</h4>
-                  <div className="text-sm text-purple-300 space-y-1">
-                    <p>• Lyrics: 85% complete</p>
-                    <p>• Melody: 90% complete</p>
-                    <p>• Beat: 70% complete</p>
-                    <p>• Mixing: In progress</p>
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200">Description</label>
+                    <Textarea value={requestForm.description} onChange={(e) => handleRequestChange('description', e.target.value)} placeholder="Describe what you want for the song (theme, story, inspirations, tempo, etc.)" className="bg-black/20 border-purple-400/50 text-white" rows={5} />
                   </div>
-                </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Mood Board / Reference Files (optional)</label>
+                    <div className="flex gap-3 items-center">
+                      <input ref={requestFileRef} type="file" accept="audio/*,.zip" onChange={handleFilesChange} className="text-sm text-purple-300" />
+                      {requestFiles && <span className="text-sm text-purple-300">{requestFiles.name}</span>}
+                    </div>
+                    <p className="text-xs text-purple-400 mt-1">Upload any sample, voice note, or reference beat that helps us understand your idea (.mp3, .wav, .m4a, .zip)</p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <input type="checkbox" checked={requestForm.agree} onChange={(e) => handleRequestChange('agree', e.target.checked)} className="accent-purple-500" />
+                    <label className="text-sm text-purple-300">I agree to be contacted about this project via email. *</label>
+                  </div>
+
+                  <div className="pt-2">
+                    <Button type="submit" onClick={handleRequestSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingRequest}>
+                      {isSubmittingRequest ? 'Sending...' : 'Send Song Request'}
+                    </Button>
+                  </div>
+                </form>
               </Card>
             </div>
           </TabsContent>
