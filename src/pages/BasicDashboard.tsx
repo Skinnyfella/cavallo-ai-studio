@@ -178,8 +178,8 @@ This is our moment, wow`
     <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-green-800 to-teal-900 py-8 px-6">
       {/* Header */}
       <div className="max-w-7xl mx-auto mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <Button 
               variant="ghost" 
               onClick={() => navigate('/plans')}
@@ -191,7 +191,7 @@ This is our moment, wow`
             <div className="h-6 w-px bg-emerald-400" />
             <div className="flex items-center gap-2">
               <Music className="w-6 h-6 text-emerald-300" />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-200 to-green-200 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-200 to-green-200 bg-clip-text text-transparent">
                 AI Song Generator
               </h1>
               <div className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg shadow-emerald-500/30">
@@ -199,11 +199,10 @@ This is our moment, wow`
               </div>
             </div>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="text-right">
+          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+            <div className="text-center md:text-right">
               <p className="text-sm text-emerald-200 font-medium">Daily Generations</p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 justify-center md:justify-end">
                 <p className="text-2xl font-bold text-emerald-100">{generationsUsed}/{maxGenerations}</p>
               </div>
             </div>
@@ -215,7 +214,7 @@ This is our moment, wow`
             >
               <User className="w-5 h-5" />
             </Button>
-            <div className="w-12 h-12 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/40">
+            <div className="hidden md:flex w-12 h-12 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full items-center justify-center shadow-lg shadow-emerald-500/40">
               <Music className="w-6 h-6 text-white" />
             </div>
           </div>
@@ -250,8 +249,8 @@ This is our moment, wow`
 
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Creation Form */}
-          <div className="lg:col-span-2">
-            <Card className="p-8 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
+          <div className="lg:col-span-2 order-first lg:order-none">
+            <Card className="p-6 sm:p-8 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
               <div className="space-y-6">
                 {/* Song Title */}
                 <div>
@@ -444,8 +443,8 @@ This is our moment, wow`
           </div>
 
           {/* Basic Features Sidebar */}
-          <div>
-            <Card className="p-6 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
+          <div className="lg:order-none order-last">
+            <Card className="p-4 sm:p-6 bg-black/40 backdrop-blur-xl border-emerald-500/30 shadow-2xl shadow-emerald-500/20">
               <h3 className="font-semibold text-emerald-200 mb-4 flex items-center">
                 <Music className="w-5 h-5 mr-2" />
                 Basic Features

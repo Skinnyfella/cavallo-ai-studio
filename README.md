@@ -80,4 +80,4 @@ pnpm build
 pnpm preview
 ```
 
-If you prefer npm, replace `pnpm` with `npm` (or `npm ci` for CI environments).
+If you prefer npm, replace `pnpm` with `npm` (or `npm ci` for CI environments).g
