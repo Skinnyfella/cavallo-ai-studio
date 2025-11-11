@@ -9,7 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, User, X } from 'lucide-react';
+import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, User, X, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ProPlusDashboard = () => {
@@ -224,6 +224,11 @@ const ProPlusDashboard = () => {
     } finally {
       setIsSubmittingCollab(false);
     }
+  };
+
+  // Live chat placeholder
+  const handleChatClick = () => {
+    toast.info('Live chat coming soon — stay tuned!');
   };
 
   const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -531,23 +536,19 @@ const ProPlusDashboard = () => {
           Human collaboration hub for songwriters, beat producers, and collaborators — connect with real people to bring your project to life.
         </p>
         
-        {/* Feature Highlights */}
+        {/* Feature Highlights - focused on human collaboration */}
         <div className="flex flex-wrap gap-3 mt-4">
           <Badge className="bg-purple-600/30 text-purple-200 border-purple-500/50">
-            <Zap className="w-3 h-3 mr-1" />
-            AI Beat Maker
+            <Crown className="w-3 h-3 mr-1" />
+            Songwriting
           </Badge>
           <Badge className="bg-fuchsia-600/30 text-fuchsia-200 border-fuchsia-500/50">
-            <Users className="w-3 h-3 mr-1" />
-            Real-time Collaboration
+            <Headphones className="w-3 h-3 mr-1" />
+            Beat Production
           </Badge>
           <Badge className="bg-violet-600/30 text-violet-200 border-violet-500/50">
-            <Layers className="w-3 h-3 mr-1" />
-            Studio Stems
-          </Badge>
-          <Badge className="bg-purple-600/30 text-purple-200 border-purple-500/50">
-            <Crown className="w-3 h-3 mr-1" />
-            Early Access
+            <Users className="w-3 h-3 mr-1" />
+            Collaboration
           </Badge>
         </div>
       </div>
@@ -935,8 +936,17 @@ const ProPlusDashboard = () => {
           <TabsContent value="collab">
             <div className="grid lg:grid-cols-1 gap-6">
               <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-1">Collaboration Request</h3>
-                <p className="text-sm text-purple-300 mb-4">Describe your collaboration and who you're looking for.</p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-purple-200 mb-1">Collaboration Request</h3>
+                    <p className="text-sm text-purple-300 mb-4">Describe your collaboration and who you're looking for.</p>
+                  </div>
+                  <div className="ml-4 flex-shrink-0">
+                    <Button variant="ghost" size="icon" onClick={handleChatClick} className="text-purple-300 hover:text-white">
+                      <MessageSquare className="w-5 h-5" />
+                    </Button>
+                  </div>
+                </div>
 
                 <form onSubmit={handleCollabSubmit} className="space-y-4">
                   <div>
