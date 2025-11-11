@@ -217,10 +217,10 @@ const Profile = () => {
         <div className="space-y-8">
           {/* User Summary Header */}
           <Card className={`${planConfig.cardBg} backdrop-blur-xl rounded-3xl shadow-lg`}>
-            <CardContent className="p-8">
-              <div className="flex items-start gap-6">
-                <div className="relative">
-                  <Avatar className="h-20 w-20 border-2 border-border">
+            <CardContent className="p-6 sm:p-8">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                <div className="relative flex-shrink-0">
+                  <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-border">
                     <AvatarImage src={userProfile.avatar} alt={userProfile.name} />
                     <AvatarFallback className="text-lg">
                       {userProfile.name.split(' ').map(n => n[0]).join('')}
@@ -237,8 +237,8 @@ const Profile = () => {
                 
                 <div className="flex-1 space-y-2">
                   <div>
-                    <h1 className="text-3xl font-bold">{userProfile.name}</h1>
-                    <p className="text-muted-foreground text-lg">@{userProfile.username}</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold">{userProfile.name}</h1>
+                    <p className="text-muted-foreground text-sm sm:text-lg">@{userProfile.username}</p>
                   </div>
                   
                   <div className="flex items-center gap-4 flex-wrap">
@@ -268,17 +268,17 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <div className="text-right space-y-3">
+                <div className="mt-4 md:mt-0 flex items-center md:flex-col gap-6 md:gap-3 w-full md:w-auto text-left md:text-right">
                   <div>
-                    <p className="text-2xl font-bold">{savedSongs.length}</p>
+                    <p className="text-xl md:text-2xl font-bold">{savedSongs.length}</p>
                     <p className="text-sm text-muted-foreground">Songs Created</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold">{savedSongs.filter(s => s.isLiked).length}</p>
+                    <p className="text-xl md:text-2xl font-bold">{savedSongs.filter(s => s.isLiked).length}</p>
                     <p className="text-sm text-muted-foreground">Favorites</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold">{collaborations.filter(c => c.status === "active").length}</p>
+                    <p className="text-xl md:text-2xl font-bold">{collaborations.filter(c => c.status === "active").length}</p>
                     <p className="text-sm text-muted-foreground">Collaborations</p>
                   </div>
                 </div>
@@ -288,7 +288,7 @@ const Profile = () => {
 
           {/* Main Content Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className={`grid w-full grid-cols-5 ${planConfig.cardBg} backdrop-blur-xl`}>
+            <TabsList className={`grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 ${planConfig.cardBg} backdrop-blur-xl`}>
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <User className="h-4 w-4" />
                 Overview

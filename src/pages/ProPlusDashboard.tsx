@@ -141,9 +141,89 @@ const ProPlusDashboard = () => {
   const [requestFiles, setRequestFiles] = useState<File | null>(null);
   const requestFileRef = useRef<HTMLInputElement>(null);
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
+  
+  // New forms for Beat Production and Collaboration (human)
+  const [beatForm, setBeatForm] = useState({
+    projectName: '',
+    genre: '',
+    tempo: '',
+    instruments: '',
+    usageType: '',
+    description: '',
+    agree: false
+  });
+  const beatFileRef = useRef<HTMLInputElement>(null);
+  const [beatFile, setBeatFile] = useState<File | null>(null);
+  const [isSubmittingBeat, setIsSubmittingBeat] = useState(false);
+
+  const [collabForm, setCollabForm] = useState({
+    title: '',
+    role: '',
+    lookingFor: '',
+    genre: '',
+    mood: '',
+    description: '',
+    linkOrFile: '',
+    terms: '',
+    agree: false
+  });
+  const collabFileRef = useRef<HTMLInputElement>(null);
+  const [isSubmittingCollab, setIsSubmittingCollab] = useState(false);
 
   const handleRequestChange = (field: string, value: any) => {
     setRequestForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleBeatChange = (field: string, value: any) => {
+    setBeatForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleBeatFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setBeatFile(file);
+  };
+
+  const handleBeatSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!beatForm.agree) {
+      toast.error('Please agree to be contacted about this project.');
+      return;
+    }
+    setIsSubmittingBeat(true);
+    try {
+      await new Promise(res => setTimeout(res, 1000));
+      toast.success('Beat request sent! We will contact you via email.');
+      setBeatForm({ projectName: '', genre: '', tempo: '', instruments: '', usageType: '', description: '', agree: false });
+      setBeatFile(null);
+      if (beatFileRef.current) beatFileRef.current.value = '';
+    } catch (err) {
+      toast.error('Failed to send beat request.');
+    } finally {
+      setIsSubmittingBeat(false);
+    }
+  };
+
+  const handleCollabChange = (field: string, value: any) => {
+    setCollabForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCollabSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!collabForm.agree) {
+      toast.error('Please agree to be contacted about this collaboration.');
+      return;
+    }
+    setIsSubmittingCollab(true);
+    try {
+      await new Promise(res => setTimeout(res, 1000));
+      toast.success('Collaboration request sent! We will contact you via email.');
+      setCollabForm({ title: '', role: '', lookingFor: '', genre: '', mood: '', description: '', linkOrFile: '', terms: '', agree: false });
+      if (collabFileRef.current) collabFileRef.current.value = '';
+    } catch (err) {
+      toast.error('Failed to send collaboration request.');
+    } finally {
+      setIsSubmittingCollab(false);
+    }
   };
 
   const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -448,7 +528,7 @@ const ProPlusDashboard = () => {
         </div>
         
         <p className="text-purple-200 text-lg">
-          Complete AI-powered music creation suite with collaboration tools! 🎼
+          Human collaboration hub for songwriters, beat producers, and collaborators — connect with real people to bring your project to life.
         </p>
         
         {/* Feature Highlights */}
@@ -475,18 +555,15 @@ const ProPlusDashboard = () => {
       {/* Main Interface */}
       <div className="max-w-7xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-    <TabsList className="grid w-full grid-cols-4 bg-black/40 backdrop-blur border border-purple-500/30">
+    <TabsList className="grid w-full grid-cols-3 bg-black/40 backdrop-blur border border-purple-500/30">
             <TabsTrigger value="create" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
               Songwriting
             </TabsTrigger>
             <TabsTrigger value="beats" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              Beat Maker
+              Beat Production
             </TabsTrigger>
             <TabsTrigger value="collab" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              Request a Songwriter
-            </TabsTrigger>
-            <TabsTrigger value="results" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
-              Studio Export
+              Collaboration
             </TabsTrigger>
           </TabsList>
 
@@ -724,32 +801,28 @@ const ProPlusDashboard = () => {
                   </h3>
                   <div className="space-y-4 text-sm">
                     <div className="flex items-start gap-3">
-                      <Zap className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                      <Crown className="w-4 h-4 text-purple-300 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-purple-200 font-medium">AI Beat Maker</p>
-                        <p className="text-purple-300">Generate custom beats from mood or reference</p>
+                        <p className="text-purple-200 font-medium">Songwriting</p>
+                        <p className="text-purple-300">Professional songwriters ready to co-write with you</p>
                       </div>
                     </div>
+
+                    <div className="flex items-start gap-3">
+                      <Headphones className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <p className="text-purple-200 font-medium">Beat Production</p>
+                        <p className="text-purple-300">Request human beat producers for custom instrumentals</p>
+                      </div>
+                    </div>
+
                     <div className="flex items-start gap-3">
                       <Users className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-purple-200 font-medium">Real-time Collaboration</p>
-                        <p className="text-purple-300">Invite producers and co-writers</p>
+                        <p className="text-purple-200 font-medium">Collaboration</p>
+                        <p className="text-purple-300">Find artists, producers, and engineers to collaborate with</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <Layers className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <p className="text-purple-200 font-medium">Studio Stems</p>
-                        <p className="text-purple-300">Export individual tracks (vocals, drums, bass)</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3">
-                    
-                      
-                    </div>
-                   
                   </div>
                 </Card>
 
@@ -772,261 +845,188 @@ const ProPlusDashboard = () => {
 
           {/* Beat Maker Tab */}
           <TabsContent value="beats">
-            <div className="grid lg:grid-cols-2 gap-6">
-              {/* Beat Settings */}
-              <Card className="p-8 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-6">AI Beat Maker</h3>
-                
-                <div className="space-y-6">
-                  {/* Tempo */}
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-3">
-                      Tempo: {beatSettings.tempo[0]} BPM
-                    </label>
-                    <Slider
-                      value={beatSettings.tempo}
-                      onValueChange={(value) => setBeatSettings(prev => ({ ...prev, tempo: value }))}
-                      max={200}
-                      min={60}
-                      step={1}
-                      className="w-full"
-                    />
-                  </div>
+              <div className="grid lg:grid-cols-2 gap-6">
+                <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
+                  <h3 className="text-xl font-semibold text-purple-200 mb-2">Beat Production Request</h3>
+                  <p className="text-sm text-purple-300 mb-4">Fill out this form to request a human beat producer for your project.</p>
 
-                  {/* Complexity */}
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-3">
-                      Complexity: {beatSettings.complexity[0]}%
-                    </label>
-                    <Slider
-                      value={beatSettings.complexity}
-                      onValueChange={(value) => setBeatSettings(prev => ({ ...prev, complexity: value }))}
-                      max={100}
-                      min={10}
-                      step={5}
-                      className="w-full"
-                    />
-                  </div>
-
-                  {/* Instruments */}
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-3">
-                      Instruments
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {['Drums', 'Bass', 'Synth', 'Piano', 'Guitar', 'Strings', 'Brass', 'Pads'].map((instrument) => (
-                        <Button
-                          key={instrument}
-                          variant={beatSettings.instruments.includes(instrument.toLowerCase()) ? 'default' : 'outline'}
-                          size="sm"
-                          className={`${beatSettings.instruments.includes(instrument.toLowerCase()) 
-                            ? 'bg-purple-600 text-white' 
-                            : 'bg-black/20 border-purple-400/50 text-purple-200 hover:bg-purple-600/20'
-                          }`}
-                          onClick={() => {
-                            const inst = instrument.toLowerCase();
-                            setBeatSettings(prev => ({
-                              ...prev,
-                              instruments: prev.instruments.includes(inst)
-                                ? prev.instruments.filter(i => i !== inst)
-                                : [...prev.instruments, inst]
-                            }));
-                          }}
-                        >
-                          {instrument}
-                        </Button>
-                      ))}
+                  <form onSubmit={handleBeatSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Project Name (optional)</label>
+                      <Input value={beatForm.projectName} onChange={(e) => handleBeatChange('projectName', e.target.value)} placeholder="Project name" className="bg-black/20 border-purple-400/50 text-white" />
                     </div>
-                  </div>
 
-                  {/* Key Selector */}
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-3">
-                      <Settings className="w-4 h-4 inline mr-2" />
-                      Musical Key
-                    </label>
-                    <Button 
-                      className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-                      onClick={() => setShowKeyDropdown(true)}
-                    >
-                      <Settings className="w-4 h-4 mr-2" />
-                      Change Key ({selectedKey})
-                    </Button>
-                  </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-purple-200 mb-2">Genre / Style</label>
+                        <Select value={beatForm.genre} onValueChange={(value) => handleBeatChange('genre', value)}>
+                          <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select genre" /></SelectTrigger>
+                          <SelectContent className="bg-black border-purple-500/30">
+                            <SelectItem value="Trap">Trap</SelectItem>
+                            <SelectItem value="Afrobeat">Afrobeat</SelectItem>
+                            <SelectItem value="Pop">Pop</SelectItem>
+                            <SelectItem value="R&B">R&B</SelectItem>
+                            <SelectItem value="House">House</SelectItem>
+                            <SelectItem value="Custom">Custom</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  
-
-                  <Button className="w-full mt-3 bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
-                    <Play className="w-4 h-4 mr-2" />
-                    Generate Beat
-                  </Button>
-                  {/* Collaborate button (Coming Soon) - placed like Change Key / Generate Beat */}
-                  <Button
-                    className="w-full mt-3 bg-purple-800/20 border border-purple-500/20 text-purple-200"
-                    disabled
-                    title="Coming Soon"
-                  >
-                    Collaborate with Human Producers — Coming Soon
-                  </Button>
-                  
-                </div>
-              </Card>
-
-              {/* Beat Preview */}
-              <Card className="p-8 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-6">Beat Preview</h3>
-                
-                <div className="space-y-4">
-                  {/* Waveform Visualization */}
-                  <div className="bg-black/40 rounded-lg p-6 border border-purple-500/30">
-                    <div className="flex items-end justify-between h-32 gap-1">
-                      {Array.from({ length: 50 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className="bg-gradient-to-t from-purple-600 to-fuchsia-500 w-2 rounded-t animate-pulse"
-                          style={{ 
-                            height: `${Math.random() * 80 + 20}%`,
-                            animationDelay: `${i * 50}ms`
-                          }}
-                        />
-                      ))}
+                      <div>
+                        <label className="block text-sm font-medium text-purple-200 mb-2">Preferred Tempo (BPM)</label>
+                        <Input type="number" value={beatForm.tempo} onChange={(e) => handleBeatChange('tempo', e.target.value)} placeholder="e.g. 120" className="bg-black/20 border-purple-400/50 text-white" />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Beat Controls */}
-                  <div className="space-y-3">
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
-                      <Play className="w-4 h-4 mr-2" />
-                      Play Beat Preview
-                    </Button>
-                    <Button variant="outline" className="w-full border-purple-400/50 text-purple-200 hover:bg-purple-600/20">
-                      <Download className="w-4 h-4 mr-2" />
-                      Export Beat Stems
-                    </Button>
-                  </div>
-
-                  {/* Beat Info */}
-                  <div className="bg-purple-900/30 rounded-lg p-4 border border-purple-500/30">
-                    <h4 className="font-medium text-purple-200 mb-2">Generated Beat Info:</h4>
-                    <div className="text-sm text-purple-300 space-y-1">
-                      <p>• Style: Trap/Hip-Hop Fusion</p>
-                      <p>• Key: F# Minor</p>
-                      <p>• Drum Pattern: 4/4 with syncopation</p>
-                      <p>• Instruments: 6 layers</p>
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Instruments / Sound Direction</label>
+                      <Textarea value={beatForm.instruments} onChange={(e) => handleBeatChange('instruments', e.target.value)} placeholder="e.g., Drums heavy, synths soft, Afro groove" className="bg-black/20 border-purple-400/50 text-white" rows={4} />
                     </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Reference Track Upload</label>
+                      <input ref={beatFileRef} type="file" accept="audio/*" onChange={handleBeatFile} className="text-sm text-purple-300" />
+                      {beatFile && <p className="text-sm text-purple-300 mt-2">{beatFile.name}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Usage Type</label>
+                      <Select value={beatForm.usageType} onValueChange={(value) => handleBeatChange('usageType', value)}>
+                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select usage" /></SelectTrigger>
+                        <SelectContent className="bg-black border-purple-500/30">
+                          <SelectItem value="Exclusive">Exclusive beat</SelectItem>
+                          <SelectItem value="Non-exclusive">Non-exclusive</SelectItem>
+                          <SelectItem value="Custom Remake">Custom remake</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Description / Notes</label>
+                      <Textarea value={beatForm.description} onChange={(e) => handleBeatChange('description', e.target.value)} placeholder="Describe your concept, artist vibe, or lyrics inspiration." className="bg-black/20 border-purple-400/50 text-white" rows={4} />
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <input type="checkbox" checked={beatForm.agree} onChange={(e) => handleBeatChange('agree', e.target.checked)} className="accent-purple-500" />
+                      <label className="text-sm text-purple-300">I agree to be contacted about this project via email.</label>
+                    </div>
+
+                    <div>
+                      <Button type="submit" onClick={handleBeatSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingBeat}>
+                        {isSubmittingBeat ? 'Sending...' : 'Send Beat Request'}
+                      </Button>
+                    </div>
+                  </form>
+                </Card>
+
+                <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
+                  <h3 className="text-xl font-semibold text-purple-200 mb-2">Beat Production Tips</h3>
+                  <p className="text-sm text-purple-300">Include reference tracks and a short note about the groove you want. The more detail, the faster a producer can match your vision.</p>
+                  <ul className="text-sm text-purple-300 mt-3 space-y-1 list-disc list-inside">
+                    <li>Preferred tempo and key</li>
+                    <li>Reference tracks or stems</li>
+                    <li>Usage (exclusive/non-exclusive)</li>
+                  </ul>
+                </Card>
+              </div>
           </TabsContent>
 
-          {/* Request a Songwriter or Producer */}
+          {/* Collaboration Requests */}
           <TabsContent value="collab">
             <div className="grid lg:grid-cols-1 gap-6">
               <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <h3 className="text-xl font-semibold text-purple-200 mb-1">Request a Songwriter</h3>
-                <p className="text-sm text-purple-300 mb-4">Tell us what kind of music you want — we'll handle the rest.</p>
+                <h3 className="text-xl font-semibold text-purple-200 mb-1">Collaboration Request</h3>
+                <p className="text-sm text-purple-300 mb-4">Describe your collaboration and who you're looking for.</p>
 
-                <form onSubmit={handleRequestSubmit} className="space-y-6">
-                  {/* Song title first, full width */}
+                <form onSubmit={handleCollabSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Song Title</label>
-                    <Input value={requestForm.songTitle} onChange={(e) => handleRequestChange('songTitle', e.target.value)} placeholder="Enter your song title" className="bg-black/20 border-purple-400/50 text-white" />
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Collab Title</label>
+                    <Input value={collabForm.title} onChange={(e) => handleCollabChange('title', e.target.value)} placeholder="Project / Collab title" className="bg-black/20 border-purple-400/50 text-white" />
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-purple-200 mb-2">Full Name *</label>
-                      <Input value={requestForm.fullName} onChange={(e) => handleRequestChange('fullName', e.target.value)} placeholder="Enter your full name" className="bg-black/20 border-purple-400/50 text-white" />
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Your Role</label>
+                      <Select value={collabForm.role} onValueChange={(value) => handleCollabChange('role', value)}>
+                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select your role" /></SelectTrigger>
+                        <SelectContent className="bg-black border-purple-500/30">
+                          <SelectItem value="Artist">Artist</SelectItem>
+                          <SelectItem value="Songwriter">Songwriter</SelectItem>
+                          <SelectItem value="Producer">Producer</SelectItem>
+                          <SelectItem value="Mixing Engineer">Mixing Engineer</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
+
                     <div>
-                      <label className="block text-sm font-medium text-purple-200 mb-2">Email Address *</label>
-                      <Input value={requestForm.email} onChange={(e) => handleRequestChange('email', e.target.value)} placeholder="Enter your email so we can contact you" className="bg-black/20 border-purple-400/50 text-white" />
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Looking For</label>
+                      <Select value={collabForm.lookingFor} onValueChange={(value) => handleCollabChange('lookingFor', value)}>
+                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Who are you looking for?" /></SelectTrigger>
+                        <SelectContent className="bg-black border-purple-500/30">
+                          <SelectItem value="Artist">Artist</SelectItem>
+                          <SelectItem value="Songwriter">Songwriter</SelectItem>
+                          <SelectItem value="Producer">Producer</SelectItem>
+                          <SelectItem value="Mixing Engineer">Mixing Engineer</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-purple-200 mb-2">Genre</label>
-                      <Select value={requestForm.genre} onValueChange={(value) => handleRequestChange('genre', value)}>
-                        <SelectTrigger className="bg-black/20 border border-purple-400/50 text-white">
-                          <SelectValue placeholder="Select genre" />
-                        </SelectTrigger>
+                      <Select value={collabForm.genre} onValueChange={(value) => handleCollabChange('genre', value)}>
+                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select genre" /></SelectTrigger>
                         <SelectContent className="bg-black border-purple-500/30">
                           <SelectItem value="Afrobeats">Afrobeats</SelectItem>
-                          <SelectItem value="R&B / Soul">R&B / Soul</SelectItem>
                           <SelectItem value="Pop">Pop</SelectItem>
-                          <SelectItem value="Amapiano">Amapiano</SelectItem>
-                          <SelectItem value="Hip-Hop / Rap">Hip-Hop / Rap</SelectItem>
-                          <SelectItem value="Gospel">Gospel</SelectItem>
-                          <SelectItem value="Dancehall">Dancehall</SelectItem>
-                          <SelectItem value="Lo-fi">Lo-fi</SelectItem>
-                          <SelectItem value="Drill">Drill</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
+                          <SelectItem value="Hip-Hop">Hip-Hop</SelectItem>
+                          <SelectItem value="R&B">R&B</SelectItem>
+                          <SelectItem value="Electronic">Electronic</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-
                     <div>
                       <label className="block text-sm font-medium text-purple-200 mb-2">Mood</label>
-                      <Select value={requestForm.mood} onValueChange={(value) => handleRequestChange('mood', value)}>
-                        <SelectTrigger className="bg-black/20 border border-purple-400/50 text-white">
-                          <SelectValue placeholder="Select mood" />
-                        </SelectTrigger>
+                      <Select value={collabForm.mood} onValueChange={(value) => handleCollabChange('mood', value)}>
+                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select mood" /></SelectTrigger>
                         <SelectContent className="bg-black border-purple-500/30">
                           <SelectItem value="Happy">Happy</SelectItem>
                           <SelectItem value="Sad">Sad</SelectItem>
-                          <SelectItem value="Romantic">Romantic</SelectItem>
                           <SelectItem value="Energetic">Energetic</SelectItem>
-                          <SelectItem value="Motivational">Motivational</SelectItem>
-                          <SelectItem value="Chill / Calm">Chill / Calm</SelectItem>
-                          <SelectItem value="Heartbreak">Heartbreak</SelectItem>
-                          <SelectItem value="Party Vibes">Party Vibes</SelectItem>
-                          <SelectItem value="Spiritual">Spiritual</SelectItem>
+                          <SelectItem value="Chill">Chill</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Song Type</label>
-                    <Select value={requestForm.songType} onValueChange={(value) => handleRequestChange('songType', value)}>
-                      <SelectTrigger className="bg-black/20 border border-purple-400/50 text-white">
-                        <SelectValue placeholder="Select song type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-black border-purple-500/30">
-                        <SelectItem value="Full Song (lyrics + beat + vocals)" disabled>Full Song (lyrics + beat + vocals) — Coming Soon</SelectItem>
-                        <SelectItem value="Lyrics Only">Lyrics Only</SelectItem>
-                        <SelectItem value="Beat Only" disabled>Beat Only — Coming Soon</SelectItem>
-                        <SelectItem value="Vocals Only">Vocals Only</SelectItem>
-                        <SelectItem value="Mix & Master" disabled>Mix & Master — Coming Soon</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <p className="text-xs text-purple-400 mt-2">Options marked "Coming Soon" are not available yet.</p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-purple-200 mb-2">Description</label>
-                    <Textarea value={requestForm.description} onChange={(e) => handleRequestChange('description', e.target.value)} placeholder="Describe what you want for the song (theme, story, inspirations, tempo, etc.)" className="bg-black/20 border-purple-400/50 text-white" rows={5} />
+                    <Textarea value={collabForm.description} onChange={(e) => handleCollabChange('description', e.target.value)} placeholder="What's the goal of this collab? (project details, vibe, deadlines, etc.)" className="bg-black/20 border-purple-400/50 text-white" rows={5} />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Mood Board / Reference Files (optional)</label>
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Upload Demo / Project Link</label>
                     <div className="flex gap-3 items-center">
-                      <input ref={requestFileRef} type="file" accept="audio/*,.zip" onChange={handleFilesChange} className="text-sm text-purple-300" />
-                      {requestFiles && <span className="text-sm text-purple-300">{requestFiles.name}</span>}
+                      <input ref={collabFileRef} type="file" accept="audio/*" onChange={(e) => handleCollabChange('linkOrFile', e.target.files?.[0]?.name ?? '')} className="text-sm text-purple-300" />
+                      <Input placeholder="Or paste a URL" value={collabForm.linkOrFile} onChange={(e) => handleCollabChange('linkOrFile', e.target.value)} className="bg-black/20 border-purple-400/50 text-white" />
                     </div>
-                    <p className="text-xs text-purple-400 mt-1">Upload any sample, voice note, or reference beat that helps us understand your idea (.mp3, .wav, .m4a, .zip)</p>
+                    <p className="text-xs text-purple-400 mt-1">Upload a demo (.mp3, .wav) or paste a project/demo link.</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-purple-200 mb-2">Collab Terms (optional)</label>
+                    <Textarea value={collabForm.terms} onChange={(e) => handleCollabChange('terms', e.target.value)} placeholder="Split percentage, credit terms, etc." className="bg-black/20 border-purple-400/50 text-white" rows={3} />
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <input type="checkbox" checked={requestForm.agree} onChange={(e) => handleRequestChange('agree', e.target.checked)} className="accent-purple-500" />
-                    <label className="text-sm text-purple-300">I agree to be contacted about this project via email. *</label>
+                    <input type="checkbox" checked={collabForm.agree} onChange={(e) => handleCollabChange('agree', e.target.checked)} className="accent-purple-500" />
+                    <label className="text-sm text-purple-300">I agree to be contacted about this collaboration via email.</label>
                   </div>
 
-                  <div className="pt-2">
-                    <Button type="submit" onClick={handleRequestSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingRequest}>
-                      {isSubmittingRequest ? 'Sending...' : 'Send Song Request'}
+                  <div>
+                    <Button type="submit" onClick={handleCollabSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingCollab}>
+                      {isSubmittingCollab ? 'Sending...' : 'Send Collaboration Request'}
                     </Button>
                   </div>
                 </form>
