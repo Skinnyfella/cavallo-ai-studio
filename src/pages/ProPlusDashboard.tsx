@@ -887,9 +887,9 @@ const ProPlusDashboard = () => {
           </TabsContent>
 
           {/* Beat Maker Tab */}
-          <TabsContent value="beats">
-              <div className="grid lg:grid-cols-2 gap-6">
-                <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
+      <TabsContent value="beats">
+        <div className="grid lg:grid-cols-3 gap-6 items-start">
+                <Card className="lg:col-span-2 p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <h3 className="text-xl font-semibold text-purple-200 mb-2">Beat Production Request</h3>
@@ -972,9 +972,9 @@ const ProPlusDashboard = () => {
                   </form>
                 </Card>
 
-                <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
+                <Card className="p-4 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20 self-start">
                   <h3 className="text-xl font-semibold text-purple-200 mb-2">Beat Production Tips</h3>
-                  <p className="text-sm text-purple-300">Include reference tracks and a short note about the groove you want. The more detail, the faster a producer can match your vision.</p>
+                  <p className="text-sm text-purple-300">Include reference tracks and a short note about the groove you want so a producer can match your vision quickly.</p>
                   <ul className="text-sm text-purple-300 mt-3 space-y-1 list-disc list-inside">
                     <li>Preferred tempo and key</li>
                     <li>Reference tracks or stems</li>
@@ -986,108 +986,121 @@ const ProPlusDashboard = () => {
 
           {/* Collaboration Requests */}
           <TabsContent value="collab">
-            <div className="grid lg:grid-cols-1 gap-6">
-              <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-xl font-semibold text-purple-200 mb-1">Collaboration Request</h3>
-                    <p className="text-sm text-purple-300 mb-4">Describe your collaboration and who you're looking for.</p>
-                  </div>
-                  <div className="ml-4 flex-shrink-0 flex flex-col items-center">
-                    <Button variant="ghost" size="icon" onClick={handleChatClick} className="text-purple-300 hover:text-white">
-                      <MessageSquare className="w-5 h-5" />
-                    </Button>
-                    <span className="text-xs text-purple-300 mt-1">Live Chat</span>
-                  </div>
-                </div>
-
-                <form onSubmit={handleCollabSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Collab Title</label>
-                    <Input value={collabForm.title} onChange={(e) => handleCollabChange('title', e.target.value)} placeholder="Project / Collab title" className="bg-black/20 border-purple-400/50 text-white" />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <label className="block text-sm font-medium text-purple-200 mb-2">Your Role</label>
-                      <Select value={collabForm.role} onValueChange={(value) => handleCollabChange('role', value)}>
-                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select your role" /></SelectTrigger>
-                        <SelectContent className="bg-black border-purple-500/30">
-                          <SelectItem value="Artist">Artist</SelectItem>
-                          <SelectItem value="Songwriter">Songwriter</SelectItem>
-                          <SelectItem value="Producer">Producer</SelectItem>
-                          <SelectItem value="Mixing Engineer">Mixing Engineer</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <h3 className="text-xl font-semibold text-purple-200 mb-1">Collaboration Request</h3>
+                      <p className="text-sm text-purple-300 mb-4">Describe your collaboration and who you're looking for.</p>
+                    </div>
+                    <div className="ml-4 flex-shrink-0 flex flex-col items-center">
+                      <Button variant="ghost" size="icon" onClick={handleChatClick} className="text-purple-300 hover:text-white">
+                        <MessageSquare className="w-5 h-5" />
+                      </Button>
+                      <span className="text-xs text-purple-300 mt-1">Live Chat</span>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleCollabSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Collab Title</label>
+                      <Input value={collabForm.title} onChange={(e) => handleCollabChange('title', e.target.value)} placeholder="Project / Collab title" className="bg-black/20 border-purple-400/50 text-white" />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-purple-200 mb-2">Your Role</label>
+                        <Select value={collabForm.role} onValueChange={(value) => handleCollabChange('role', value)}>
+                          <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select your role" /></SelectTrigger>
+                          <SelectContent className="bg-black border-purple-500/30">
+                            <SelectItem value="Artist">Artist</SelectItem>
+                            <SelectItem value="Songwriter">Songwriter</SelectItem>
+                            <SelectItem value="Producer">Producer</SelectItem>
+                            <SelectItem value="Mixing Engineer">Mixing Engineer</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-purple-200 mb-2">Looking For</label>
+                        <Select value={collabForm.lookingFor} onValueChange={(value) => handleCollabChange('lookingFor', value)}>
+                          <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Who are you looking for?" /></SelectTrigger>
+                          <SelectContent className="bg-black border-purple-500/30">
+                            <SelectItem value="Artist">Artist</SelectItem>
+                            <SelectItem value="Songwriter">Songwriter</SelectItem>
+                            <SelectItem value="Producer">Producer</SelectItem>
+                            <SelectItem value="Mixing Engineer">Mixing Engineer</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-purple-200 mb-2">Genre</label>
+                        <Select value={collabForm.genre} onValueChange={(value) => handleCollabChange('genre', value)}>
+                          <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select genre" /></SelectTrigger>
+                          <SelectContent className="bg-black border-purple-500/30">
+                            <SelectItem value="Afrobeats">Afrobeats</SelectItem>
+                            <SelectItem value="Pop">Pop</SelectItem>
+                            <SelectItem value="Hip-Hop">Hip-Hop</SelectItem>
+                            <SelectItem value="R&B">R&B</SelectItem>
+                            <SelectItem value="Electronic">Electronic</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-purple-200 mb-2">Mood</label>
+                        <Select value={collabForm.mood} onValueChange={(value) => handleCollabChange('mood', value)}>
+                          <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select mood" /></SelectTrigger>
+                          <SelectContent className="bg-black border-purple-500/30">
+                            <SelectItem value="Happy">Happy</SelectItem>
+                            <SelectItem value="Sad">Sad</SelectItem>
+                            <SelectItem value="Energetic">Energetic</SelectItem>
+                            <SelectItem value="Chill">Chill</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-purple-200 mb-2">Looking For</label>
-                      <Select value={collabForm.lookingFor} onValueChange={(value) => handleCollabChange('lookingFor', value)}>
-                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Who are you looking for?" /></SelectTrigger>
-                        <SelectContent className="bg-black border-purple-500/30">
-                          <SelectItem value="Artist">Artist</SelectItem>
-                          <SelectItem value="Songwriter">Songwriter</SelectItem>
-                          <SelectItem value="Producer">Producer</SelectItem>
-                          <SelectItem value="Mixing Engineer">Mixing Engineer</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Description</label>
+                      <Textarea value={collabForm.description} onChange={(e) => handleCollabChange('description', e.target.value)} placeholder="Describe your concept, artist vibe, or lyrics inspiration." className="bg-black/20 border-purple-400/50 text-white" rows={5} />
                     </div>
-                  </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-purple-200 mb-2">Genre</label>
-                      <Select value={collabForm.genre} onValueChange={(value) => handleCollabChange('genre', value)}>
-                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select genre" /></SelectTrigger>
-                        <SelectContent className="bg-black border-purple-500/30">
-                          <SelectItem value="Afrobeats">Afrobeats</SelectItem>
-                          <SelectItem value="Pop">Pop</SelectItem>
-                          <SelectItem value="Hip-Hop">Hip-Hop</SelectItem>
-                          <SelectItem value="R&B">R&B</SelectItem>
-                          <SelectItem value="Electronic">Electronic</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">Upload Demo / Project Link</label>
+                      <div className="flex gap-3 items-center">
+                        <input ref={collabFileRef} type="file" accept="audio/*" onChange={(e) => handleCollabChange('linkOrFile', e.target.files?.[0]?.name ?? '')} className="text-sm text-purple-300" />
+                        <Input placeholder="Or paste a URL" value={collabForm.linkOrFile} onChange={(e) => handleCollabChange('linkOrFile', e.target.value)} className="bg-black/20 border-purple-400/50 text-white" />
+                      </div>
+                      <p className="text-xs text-purple-400 mt-1">Upload a demo (.mp3, .wav) or paste a project/demo link.</p>
                     </div>
+                    <div className="flex items-center gap-3">
+                      <input type="checkbox" checked={collabForm.agree} onChange={(e) => handleCollabChange('agree', e.target.checked)} className="accent-purple-500" />
+                      <label className="text-sm text-purple-300">I agree to be contacted about this collaboration via email.</label>
+                    </div>
+
                     <div>
-                      <label className="block text-sm font-medium text-purple-200 mb-2">Mood</label>
-                      <Select value={collabForm.mood} onValueChange={(value) => handleCollabChange('mood', value)}>
-                        <SelectTrigger className="bg-black/20 border-purple-400/50 text-white"><SelectValue placeholder="Select mood" /></SelectTrigger>
-                        <SelectContent className="bg-black border-purple-500/30">
-                          <SelectItem value="Happy">Happy</SelectItem>
-                          <SelectItem value="Sad">Sad</SelectItem>
-                          <SelectItem value="Energetic">Energetic</SelectItem>
-                          <SelectItem value="Chill">Chill</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Button type="submit" onClick={handleCollabSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingCollab}>
+                        {isSubmittingCollab ? 'Sending...' : 'Send Collaboration Request'}
+                      </Button>
                     </div>
-                  </div>
+                  </form>
+                </Card>
+              </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Description</label>
-                    <Textarea value={collabForm.description} onChange={(e) => handleCollabChange('description', e.target.value)} placeholder="Describe your concept, artist vibe, or lyrics inspiration." className="bg-black/20 border-purple-400/50 text-white" rows={5} />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Upload Demo / Project Link</label>
-                    <div className="flex gap-3 items-center">
-                      <input ref={collabFileRef} type="file" accept="audio/*" onChange={(e) => handleCollabChange('linkOrFile', e.target.files?.[0]?.name ?? '')} className="text-sm text-purple-300" />
-                      <Input placeholder="Or paste a URL" value={collabForm.linkOrFile} onChange={(e) => handleCollabChange('linkOrFile', e.target.value)} className="bg-black/20 border-purple-400/50 text-white" />
-                    </div>
-                    <p className="text-xs text-purple-400 mt-1">Upload a demo (.mp3, .wav) or paste a project/demo link.</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <input type="checkbox" checked={collabForm.agree} onChange={(e) => handleCollabChange('agree', e.target.checked)} className="accent-purple-500" />
-                    <label className="text-sm text-purple-300">I agree to be contacted about this collaboration via email.</label>
-                  </div>
-
-                  <div>
-                    <Button type="submit" onClick={handleCollabSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingCollab}>
-                      {isSubmittingCollab ? 'Sending...' : 'Send Collaboration Request'}
-                    </Button>
-                  </div>
-                </form>
-              </Card>
+              <div>
+                <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
+                  <h3 className="text-xl font-semibold text-purple-200 mb-2">Collaboration</h3>
+                  <p className="text-sm text-purple-300">Post your project, specify the roles you need, and share a short reference so collaborators can respond quickly.</p>
+                  <ul className="text-sm text-purple-300 mt-3 space-y-1 list-disc list-inside">
+                    <li>List roles & expectations</li>
+                    <li>Mention genre & mood</li>
+                  </ul>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 
