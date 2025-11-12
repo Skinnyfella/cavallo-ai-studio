@@ -698,6 +698,7 @@ const ProPlusDashboard = () => {
                     </div>
 
                     {/* Advanced Songwriting Options */}
+                  
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-purple-200 mb-2">
@@ -760,6 +761,12 @@ const ProPlusDashboard = () => {
                         )}
                       </div>
                     </div>
+                    {/* Main pro tip shown until the user picks a structure or rhyme scheme */}
+                    {(!songStructure && !rhymeScheme) && (
+                      <p className="text-sm text-purple-300 mb-2">
+                        Pro tip: If you’re not sure what to pick, choose <span className="font-semibold">Freeform</span> for structure and <span className="font-semibold">Freestyle</span> for rhyme — it gives your songwriter more creative freedom.
+                      </p>
+                    )}
 
                     {/* Reference Link */}
                     <div>
@@ -1036,7 +1043,7 @@ const ProPlusDashboard = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-purple-200 mb-2">Description</label>
-                    <Textarea value={collabForm.description} onChange={(e) => handleCollabChange('description', e.target.value)} placeholder="What's the goal of this collab? (project details, vibe, deadlines, etc.)" className="bg-black/20 border-purple-400/50 text-white" rows={5} />
+                    <Textarea value={collabForm.description} onChange={(e) => handleCollabChange('description', e.target.value)} placeholder="Describe your concept, artist vibe, or lyrics inspiration." className="bg-black/20 border-purple-400/50 text-white" rows={5} />
                   </div>
 
                   <div>
@@ -1047,12 +1054,6 @@ const ProPlusDashboard = () => {
                     </div>
                     <p className="text-xs text-purple-400 mt-1">Upload a demo (.mp3, .wav) or paste a project/demo link.</p>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Collab Terms (optional)</label>
-                    <Textarea value={collabForm.terms} onChange={(e) => handleCollabChange('terms', e.target.value)} placeholder="Split percentage, credit terms, etc." className="bg-black/20 border-purple-400/50 text-white" rows={3} />
-                  </div>
-
                   <div className="flex items-center gap-3">
                     <input type="checkbox" checked={collabForm.agree} onChange={(e) => handleCollabChange('agree', e.target.checked)} className="accent-purple-500" />
                     <label className="text-sm text-purple-300">I agree to be contacted about this collaboration via email.</label>
