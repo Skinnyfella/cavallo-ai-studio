@@ -537,21 +537,7 @@ const ProPlusDashboard = () => {
         </p>
         
         {/* Feature Highlights - focused on human collaboration */}
-        <div className="flex flex-wrap gap-3 mt-4">
-          <Badge className="bg-purple-600/30 text-purple-200 border-purple-500/50">
-            <Crown className="w-3 h-3 mr-1" />
-            Songwriting
-          </Badge>
-          <Badge className="bg-fuchsia-600/30 text-fuchsia-200 border-fuchsia-500/50">
-            <Headphones className="w-3 h-3 mr-1" />
-            Beat Production
-          </Badge>
-          <Badge className="bg-violet-600/30 text-violet-200 border-violet-500/50">
-            <Users className="w-3 h-3 mr-1" />
-            Collaboration
-          </Badge>
-        </div>
-      </div>
+              </div>
 
       {/* Main Interface */}
       <div className="max-w-7xl mx-auto">
@@ -757,6 +743,18 @@ const ProPlusDashboard = () => {
                       />
                     </div>
 
+                    {/* Optional File Upload for Songwriter (artist/demo) */}
+                    <div>
+                      <label className="block text-sm font-medium text-purple-200 mb-2">
+                        Upload Demo / Melody (optional)
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <input ref={requestFileRef} type="file" accept="audio/*" onChange={(e) => handleFilesChange(e)} className="text-sm text-purple-300" />
+                        {requestFiles && <p className="text-sm text-purple-300">{requestFiles.name}</p>}
+                      </div>
+                      <p className="text-xs text-purple-400 mt-1">Attach a demo (.mp3, .wav) or melody to help the songwriter.</p>
+                    </div>
+
                     {/* Concept & Lyrics */}
                     <div>
                       <label className="block text-sm font-medium text-purple-200 mb-2">
@@ -772,6 +770,11 @@ const ProPlusDashboard = () => {
                     </div>
 
                     {/* Generate Button */}
+                    <div className="flex items-center gap-3">
+                      <input type="checkbox" checked={requestForm.agree} onChange={(e) => handleRequestChange('agree', e.target.checked)} className="accent-purple-500" id="songwriter-agree" />
+                      <label htmlFor="songwriter-agree" className="text-sm text-purple-300">I agree to be contacted about this songwriting via email.</label>
+                    </div>
+
                     <Button 
                       onClick={handleGenerate}
                       disabled={isGenerating}
@@ -828,18 +831,7 @@ const ProPlusDashboard = () => {
                 </Card>
 
                 {/* Early Access Features */}
-                <Card className="mt-4 p-4 bg-gradient-to-br from-yellow-900/30 to-orange-900/30 border-yellow-500/40">
-                  <h4 className="font-semibold text-yellow-200 mb-2 flex items-center">
-                    <Zap className="w-4 h-4 mr-2" />
-                    Early Access
-                  </h4>
-                  <div className="text-xs text-yellow-300 space-y-1">
-                    <p>• Harmony layer generation</p>
-                    <p>• AI mastering suite</p>
-                    <p>• Advanced voice cloning</p>
-                    <p>• Multi-language lyrics</p>
-                  </div>
-                </Card>
+                
               </div>
             </div>
           </TabsContent>
@@ -941,10 +933,11 @@ const ProPlusDashboard = () => {
                     <h3 className="text-xl font-semibold text-purple-200 mb-1">Collaboration Request</h3>
                     <p className="text-sm text-purple-300 mb-4">Describe your collaboration and who you're looking for.</p>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="ml-4 flex-shrink-0 flex flex-col items-center">
                     <Button variant="ghost" size="icon" onClick={handleChatClick} className="text-purple-300 hover:text-white">
                       <MessageSquare className="w-5 h-5" />
                     </Button>
+                    <span className="text-xs text-purple-300 mt-1">Live Chat</span>
                   </div>
                 </div>
 
