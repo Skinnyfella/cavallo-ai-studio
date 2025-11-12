@@ -564,6 +564,18 @@ const ProPlusDashboard = () => {
               {/* Main Creation Form */}
               <div className="lg:col-span-2">
                 <Card className="p-8 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
+                  <div className="flex items-start justify-between mb-2">
+                     <div className="mr-4">
+                      <h3 className="text-xl font-semibold text-purple-200 mb-1">Songwriting Request</h3>
+                      <p className="text-sm text-purple-300 mb-3">Fill out this form to request a professional songwriter to co-write, refine, or develop your song idea.</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Button variant="ghost" size="icon" onClick={handleChatClick} className="text-purple-300 hover:text-white">
+                        <MessageSquare className="w-5 h-5" />
+                      </Button>
+                      <span className="text-xs text-purple-300 mt-1">Live Chat</span>
+                    </div>
+                  </div>
                   <div className="space-y-6">
                     {/* Song Title */}
                     <div>
@@ -878,8 +890,18 @@ const ProPlusDashboard = () => {
           <TabsContent value="beats">
               <div className="grid lg:grid-cols-2 gap-6">
                 <Card className="p-6 bg-black/40 backdrop-blur-xl border-purple-500/30 shadow-2xl shadow-purple-500/20">
-                  <h3 className="text-xl font-semibold text-purple-200 mb-2">Beat Production Request</h3>
-                  <p className="text-sm text-purple-300 mb-4">Fill out this form to request a human beat producer for your project.</p>
+                  <div className="flex items-start justify-between mb-2">
+                    <div>
+                      <h3 className="text-xl font-semibold text-purple-200 mb-2">Beat Production Request</h3>
+                      <p className="text-sm text-purple-300 mb-4">Fill out this form to request a human beat producer for your project.</p>
+                    </div>
+                    <div className="ml-4 flex-shrink-0 flex flex-col items-center">
+                      <Button variant="ghost" size="icon" onClick={handleChatClick} className="text-purple-300 hover:text-white">
+                        <MessageSquare className="w-5 h-5" />
+                      </Button>
+                      <span className="text-xs text-purple-300 mt-1">Live Chat</span>
+                    </div>
+                  </div>
 
                   <form onSubmit={handleBeatSubmit} className="space-y-4">
                     <div>
