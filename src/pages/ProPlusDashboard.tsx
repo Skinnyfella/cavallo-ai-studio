@@ -122,6 +122,10 @@ const ProPlusDashboard = () => {
     complexity: [70]
   });
   const [activeTab, setActiveTab] = useState('create');
+  const [songStructure, setSongStructure] = useState('');
+  const [structureTip, setStructureTip] = useState('');
+  const [rhymeScheme, setRhymeScheme] = useState('');
+  const [rhymeTip, setRhymeTip] = useState('');
   const [collaborators] = useState([
     { name: 'Sarah M.', role: 'Producer', status: 'online' },
     { name: 'Mike T.', role: 'Mixer', status: 'away' }
@@ -699,34 +703,61 @@ const ProPlusDashboard = () => {
                         <label className="block text-sm font-medium text-purple-200 mb-2">
                           Song Structure
                         </label>
-                        <Select>
+                        <Select onValueChange={(value) => {
+                          setSongStructure(value);
+                          // Map tips to each structure
+                          const tips: Record<string, string> = {
+                            'verse-chorus-bridge': 'Classic pop/afrobeats pattern (most popular).',
+                            'hook-verse-hook': 'Used a lot in afrobeat and hip-hop — short, catchy, repeat-heavy.',
+                            'verse-chorus-outro': "Simple, emotional songs, especially R&B.",
+                            'freeform': 'For songwriters who want to do their own unique thing.'
+                          };
+                          setStructureTip(tips[value] ?? '');
+                        }}>
                           <SelectTrigger className="bg-black/20 border-purple-400/50 text-white">
                             <SelectValue placeholder="Select structure" />
                           </SelectTrigger>
                           <SelectContent className="bg-black border-purple-500">
-                            <SelectItem value="verse-chorus">Verse-Chorus-Verse-Chorus</SelectItem>
-                            <SelectItem value="aaba">AABA (32-bar form)</SelectItem>
-                            <SelectItem value="custom">Custom Structure</SelectItem>
-                            <SelectItem value="extended">Extended (Bridge + Outro)</SelectItem>
+                            <SelectItem value="verse-chorus-bridge">Verse – Chorus – Verse – Chorus – Bridge – Chorus</SelectItem>
+                            <SelectItem value="hook-verse-hook">Hook – Verse – Hook</SelectItem>
+                            <SelectItem value="verse-chorus-outro">Verse – Chorus – Verse – Chorus – Outro</SelectItem>
+                            <SelectItem value="freeform">Freeform / Open Structure</SelectItem>
                           </SelectContent>
                         </Select>
+
+                        {structureTip && (
+                          <p className="text-xs text-purple-300 mt-2">Pro tip: {structureTip}</p>
+                        )}
                       </div>
                       
                       <div>
                         <label className="block text-sm font-medium text-purple-200 mb-2">
                           Rhyme Scheme
                         </label>
-                        <Select>
+                        <Select onValueChange={(value) => {
+                          setRhymeScheme(value);
+                          const tips: Record<string, string> = {
+                            'aabb': 'AABB → Line 1 rhymes with Line 2, Line 3 rhymes with Line 4.',
+                            'abab': 'ABAB → Alternating rhymes.',
+                            'abba': 'ABBA → Wrap-around pattern (used in ballads or poetic songs).',
+                            'free': 'Freestyle / No Set Pattern → For rap or spoken-word style writing.'
+                          };
+                          setRhymeTip(tips[value] ?? '');
+                        }}>
                           <SelectTrigger className="bg-black/20 border-purple-400/50 text-white">
                             <SelectValue placeholder="Select rhyme style" />
                           </SelectTrigger>
                           <SelectContent className="bg-black border-purple-500">
-                            <SelectItem value="abab">ABAB (Alternating)</SelectItem>
-                            <SelectItem value="aabb">AABB (Couplets)</SelectItem>
-                            <SelectItem value="abcb">ABCB (Ballad)</SelectItem>
-                            <SelectItem value="free">Free Verse</SelectItem>
+                            <SelectItem value="aabb">AABB </SelectItem>
+                            <SelectItem value="abab">ABAB </SelectItem>
+                            <SelectItem value="abba">ABBA(ballad/poetic)</SelectItem>
+                            <SelectItem value="free">Freestyle / No Set Pattern</SelectItem>
                           </SelectContent>
                         </Select>
+
+                        {rhymeTip && (
+                          <p className="text-xs text-purple-300 mt-2">Pro tip: {rhymeTip}</p>
+                        )}
                       </div>
                     </div>
 
