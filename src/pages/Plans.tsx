@@ -14,7 +14,7 @@ const Plans = () => {
   const plans = [
     {
       id: "basic" as PlanTier,
-      name: "Lyricist",
+      name: "AI-assisted",
       icon: Mic,
       price: "$15",
       priceNGN: "₦12,000",
@@ -33,7 +33,7 @@ const Plans = () => {
     },
     {
       id: "pro" as PlanTier,
-      name: "Hitmaker",
+      name: "AI-enhanced",
       icon: Headphones,
       price: "$25",
       priceNGN: "₦20,000",
@@ -55,21 +55,21 @@ const Plans = () => {
     },
     {
       id: "proplus" as PlanTier,
-      name: "Hitmaker+",
+      name: "Human-collaborative",
       icon: Piano,
       price: "$40",
       priceNGN: "₦32,000",
       tokens: 60,
       glowColor: "group-hover:shadow-gold/50",
       features: [
-        "Everything in Hitmaker",
-        "AI Collab with musicians",
-        "Studio Pack exports",
-        "Priority processing",
+        "Human Songwriting (Work-for-Hire)",
+        "Human Beat Production",
+        "Human Artist Collaboration",
+        "Direct chat with creators (coming soon)",
         "Premium support",
        
       ],
-      cta: "Join Hitmaker+",
+      cta: "Upgrade to Pro+",
     },
   ];
 
