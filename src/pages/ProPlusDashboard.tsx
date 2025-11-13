@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Zap, Infinity, Crown, Layers, Headphones, User, X, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import Footer from '@/components/Footer';
 
 const ProPlusDashboard = () => {
   const navigate = useNavigate();
@@ -837,8 +838,8 @@ const ProPlusDashboard = () => {
                         </>
                       ) : (
                         <>
-                          <Crown className="w-5 h-5 mr-3" />
-                          Generate Complete Song Suite
+                          
+                          Send Songwriting Request to Pro Songwriter (12 Token)
                         </>
                       )}
                     </Button>
@@ -966,7 +967,7 @@ const ProPlusDashboard = () => {
 
                     <div>
                       <Button type="submit" onClick={handleBeatSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingBeat}>
-                        {isSubmittingBeat ? 'Sending...' : 'Send Beat Request'}
+                        {isSubmittingBeat ? 'Sending...' : 'Send Beat Request to Pro Beatmaker (12 Token)'}
                       </Button>
                     </div>
                   </form>
@@ -1084,7 +1085,7 @@ const ProPlusDashboard = () => {
 
                     <div>
                       <Button type="submit" onClick={handleCollabSubmit} className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white" disabled={isSubmittingCollab}>
-                        {isSubmittingCollab ? 'Sending...' : 'Send Collaboration Request'}
+                        {isSubmittingCollab ? 'Sending...' : 'Send Collaboration Request (12 Token)'}
                       </Button>
                     </div>
                   </form>
@@ -1343,6 +1344,8 @@ const ProPlusDashboard = () => {
           </div>
         </DialogContent>
       </Dialog>
+        {/* Footer */}
+        <Footer />
     </div>
   );
 };

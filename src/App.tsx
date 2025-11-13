@@ -12,6 +12,11 @@ import ProDashboard from "./pages/ProDashboard";
 import ProPlusDashboard from "./pages/ProPlusDashboard";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Refund from "./pages/Refund";
+import Support from "./pages/Support";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +34,11 @@ const App = () => (
           <Route path="/dashboard/basic" element={<BasicDashboard />} />
           <Route path="/dashboard/pro" element={<ProDashboard />} />
           <Route path="/dashboard/proplus" element={<ProPlusDashboard />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/refund" element={<Refund />} />
+          <Route path="/support" element={<Support />} />
           <Route path="/profile/:plan" element={<Profile />} />
           <Route path="/profile" element={<Profile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

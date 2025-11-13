@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Users, Infinity, Crown, Layers, Headphones, Star, User, X, Check, Hash } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import Footer from '@/components/Footer';
 
 const ProDashboard = () => {
   const navigate = useNavigate();
@@ -1498,6 +1499,8 @@ const ProDashboard = () => {
           </div>
         </DialogContent>
       </Dialog>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

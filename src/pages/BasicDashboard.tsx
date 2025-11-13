@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, Music, Download, Mic, Play, Pause, Upload, Volume2, Edit3, Settings, Star, User, PenTool, Wand2, Users, Hash, Languages, BookOpen, Lightbulb } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import Footer from '@/components/Footer';
 
 const FeatureCard = ({ icon: Icon, title, description }: { icon: any, title: string, description: string }) => (
   <Card className="p-4 flex items-start space-x-3 hover:bg-accent/10 transition-colors">
@@ -654,6 +655,9 @@ This is our moment, wow`
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
