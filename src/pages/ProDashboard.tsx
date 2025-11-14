@@ -862,9 +862,9 @@ const ProDashboard = () => {
                     Want More Power?
                   </h4>
                   <div className="text-xs text-purple-300 space-y-1 mb-3">
-                    <p>• AI beat maker & producer tools</p>
-                    <p>• Real-time collaboration</p>
-                    <p>• Studio stems & WAV exports</p>
+                    <p>• Human Songwriting</p>
+                    <p>• Human Beat Production</p>
+                    <p>• Human Artist Collaboration</p>
                     <p>• More tokens</p>
                   </div>
                   <Button 

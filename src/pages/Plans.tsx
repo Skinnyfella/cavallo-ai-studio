@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check, Mic, Headphones, Piano } from "lucide-react";
+import { Check, Mic, Headphones, Piano, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 
-type PlanTier = "basic" | "pro" | "proplus";
+type PlanTier = "basic" | "pro" | "proplus" | "promotion";
 
 const Plans = () => {
   const navigate = useNavigate();
@@ -70,6 +70,27 @@ const Plans = () => {
        
       ],
       cta: "Upgrade to Pro+",
+    },
+    {
+      id: "promotion" as PlanTier,
+      name: "Promotion",
+      icon: Megaphone,
+      price: "Coming Soon",
+      // priceNGN: "—",
+      // tokens: 0,
+      glowColor: "group-hover:shadow-indigo/40",
+      features: [
+        "Smart song marketing breakdown",
+        "Audience targeting recommendations",
+        "Pitch-perfect promo captions for Instagram, TikTok & X",
+        "Hashtag booster suggestions",
+        "Song release content calendar",
+        "EPK-style promo pack (bio + storyline + angles)",
+        "Playlist pitch generator",
+        "Influencer outreach templates",
+      ],
+      cta: "Promotion (Coming Soon)",
+      comingSoon: true,
     },
   ];
 
@@ -177,12 +198,14 @@ const Plans = () => {
 
                   {/* CTA */}
                   <Button
-                    onClick={() => handleSelectPlan(plan.id)}
+                    onClick={() => !plan.comingSoon && handleSelectPlan(plan.id)}
+                    disabled={Boolean((plan as any).comingSoon)}
                     className={`
                       w-full h-12 rounded-xl font-semibold transition-all
                       ${plan.id === 'basic' ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30' : ''}
                       ${plan.id === 'pro' ? 'bg-silver text-background hover:bg-silver/90 shadow-lg shadow-silver/30' : ''}
                       ${plan.id === 'proplus' ? 'bg-gold text-background hover:bg-gold/90 shadow-lg shadow-gold/30' : ''}
+                      ${((plan as any).comingSoon) ? 'bg-primary/20 text-muted-foreground cursor-not-allowed opacity-80' : ''}
                     `}
                   >
                     {plan.cta}
